@@ -4,12 +4,12 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".SearchRouteActivity">
+    tools:context=".SavedRoutesActivity">
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/search_route"
+        android:text="@string/saved_routes"
         android:textColor="#000000"
         android:textSize="28sp"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -25,5 +25,6 @@
         android:layout_height="wrap_content"
         android:layout_gravity="bottom"
         app:layout_constraintBottom_toBottomOf="parent" />
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>

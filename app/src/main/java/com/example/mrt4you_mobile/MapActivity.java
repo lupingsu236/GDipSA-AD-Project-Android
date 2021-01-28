@@ -4,11 +4,20 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.Bundle;
 
-public class SaveRoutes extends AppCompatActivity {
+public class MapActivity extends BaseActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_save_routes);
+    }
+
+    @Override
+    int getContentViewId() {
+        return R.layout.activity_map;
+    }
+
+    @Override
+    int getNavigationMenuItemId() {
+        return R.id.action_map;
     }
 }
