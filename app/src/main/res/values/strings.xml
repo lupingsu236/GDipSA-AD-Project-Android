@@ -1,3 +1,14 @@
 <resources>
-    <string name="app_name">MRT4you-mobile</string>
+    <string name="app_name">MRT4You</string>
+    <string name="add_starred_station">Add Starred Station</string>
+    <string name="view_system_map">MRT/LRT System Map</string>
+    <string name="view_news">News | Announcements</string>
+    <string name="saved_routes">Saved Routes</string>
+    <string name="search_route">Search Route</string>
+    <string name="starred_stations">Starred Stations</string>
+    <string name="starred">starred</string>
+    <string name="map">map</string>
+    <string name="search">search</string>
+    <string name="saved">saved</string>
+    <string name="news">news</string>
 </resources>
