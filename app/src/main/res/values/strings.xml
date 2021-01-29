@@ -11,4 +11,9 @@
     <string name="search">search</string>
     <string name="saved">saved</string>
     <string name="news">news</string>
+    <string name="icon_for_bookmarking">icon for bookmarking</string>
+    <string name="mrt_map">mrt map</string>
+    <string name="zoom_button_for_map">zoom button for map</string>
+    <string name="starting_station">Starting Station</string>
+    <string name="destination">Destination</string>
 </resources>
