@@ -18,9 +18,8 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.041" />
 
-    <fragment
-        android:id="@+id/fragment_route"
-        android:name="com.example.mrt4you_mobile.RouteFragment"
+    <FrameLayout
+        android:id="@+id/fragment_route_container"
         android:layout_width="360dp"
         android:layout_height="500dp"
         android:layout_marginBottom="65dp"
