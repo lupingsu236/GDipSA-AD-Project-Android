@@ -18,6 +18,83 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.041" />
 
+    <ScrollView
+        app:layout_constraintTop_toTopOf="parent"
+        android:layout_marginTop="90dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        android:layout_marginBottom="100dp"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical" >
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="10dp"
+                android:layout_gravity="right"
+                android:textSize="24dp"
+                android:textStyle="italic"
+                android:text="21 Nov 2020, 9:45 am" />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="10dp"
+                android:textSize="24dp"
+                android:lineSpacingExtra="10dp"
+                android:text="[ NSL ]: UPDATE: All train services on NSL have resumed." />
+
+            <TextView
+                android:layout_marginTop="30dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="10dp"
+                android:layout_gravity="right"
+                android:textSize="24dp"
+                android:textStyle="italic"
+                android:text="21 Nov 2020, 8:18 am" />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="10dp"
+                android:textSize="24dp"
+                android:lineSpacingExtra="10dp"
+                android:text="[ NSL ]: UPDATE: Fault cleared, train svcs are progressively being restored. Please expect additional 10mins train travel time between Kranji and Jurong East." />
+
+            <TextView
+                android:layout_marginTop="30dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="10dp"
+                android:layout_gravity="right"
+                android:textSize="24dp"
+                android:textStyle="italic"
+                android:text="21 Nov 2020, 7:32 am" />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="10dp"
+                android:textSize="24dp"
+                android:lineSpacingExtra="10dp"
+                android:text="[ NSL ]: Due to a train fault, please expect additional 25 mins train travel time between Woodlands and Jurong East." />
+
+        </LinearLayout>
+    </ScrollView>
+
+
+
     <include
         layout="@layout/bottom_navigation"
         android:layout_width="match_parent"
