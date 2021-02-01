@@ -40,7 +40,8 @@ public class AddStarredStationActivity extends BaseActivity {
                     intent.putExtra("linename", linespinner.getSelectedItem().toString());
                     intent.putExtra("stationname", stationspinner.getSelectedItem().toString());
                     intent.putExtra("starname", starname.getText().toString());
-                    startActivity(intent);
+                    setResult(RESULT_OK,intent);
+                    finish();
                 }
             }
         });

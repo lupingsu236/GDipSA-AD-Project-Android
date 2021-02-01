@@ -50,6 +50,7 @@
                 android:lineSpacingExtra="10dp"
                 android:text="[ NSL ]: UPDATE: All train services on NSL have resumed." />
 
+
             <TextView
                 android:layout_marginTop="30dp"
                 android:layout_width="wrap_content"
