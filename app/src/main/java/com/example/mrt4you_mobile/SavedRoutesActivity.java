@@ -61,4 +61,15 @@ public class SavedRoutesActivity extends BaseActivity implements AdapterView.OnI
         trans.addToBackStack(null);
         trans.commit();
     }
+
+    @Override
+    public void onBackPressed()
+    {
+        //if back stack only consist of the first fragment insertion, go back to SearchRouteActivity
+        if(getSupportFragmentManager().getBackStackEntryCount() == 1) {
+            startActivity(new Intent(this, SearchRouteActivity.class));
+        } else {
+            super.onBackPressed();
+        }
+    }
 }

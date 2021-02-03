@@ -34,4 +34,16 @@ public class SearchRouteActivity extends BaseActivity {
         trans.addToBackStack(null);
         trans.commit();
     }
+
+    @Override
+    public void onBackPressed()
+    {
+        //if back stack only consist of the first fragment insertion, exit app
+        int backStackCount = getSupportFragmentManager().getBackStackEntryCount();
+        if(backStackCount == 1) {
+            System.exit(1);
+        } else {
+            super.onBackPressed();
+        }
+    }
 }
