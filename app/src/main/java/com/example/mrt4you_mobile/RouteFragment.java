@@ -3,6 +3,7 @@ package com.example.mrt4you_mobile;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.ListFragment;
 
 import android.view.LayoutInflater;
 import android.view.View;
@@ -10,6 +11,7 @@ import android.view.ViewGroup;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.ImageButton;
+import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -33,7 +35,7 @@ public class RouteFragment extends Fragment {
     public void onStart() {
         super.onStart();
 
-        String route = "This is the routefragment";
+        String route = "";
         View view = getView();
         if(view!=null) {
             Bundle bundle = getArguments();
@@ -44,10 +46,10 @@ public class RouteFragment extends Fragment {
                 ImageButton tobookmark = view.findViewById(R.id.tobookmark);
                 tobookmark.setVisibility(View.GONE);
              }
-           TextView fragment_text = view.findViewById(R.id.textinput_placeholder);
-           fragment_text.setText(route);
+           /*TextView fragment_text = view.findViewById(R.id.textinput_placeholder);
+           fragment_text.setText(route);*/
 
-           Button searchBtn = view.findViewById(R.id.searchBtn);
+           ImageButton searchBtn = view.findViewById(R.id.searchBtn);
            AutoCompleteTextView startingStation = view.findViewById(R.id.starting_station);
            AutoCompleteTextView destination = view.findViewById(R.id.destination);
 
@@ -64,7 +66,39 @@ public class RouteFragment extends Fragment {
                else
                {
                     Graph graph = Graph.createMRTGraph();
-                    Map<String, Integer> pathData = Dijkstra.
+                    Route result = Dijkstra.
+                           shortestPathAndDistanceFromSourceToDestination(startingStationName,
+                                   destinationName, graph);
+                    if (result != null) {
+                        RouteDisplayAdapter adapter = new RouteDisplayAdapter(getActivity(), 0);
+                        adapter.setData(result);
+
+                        ListView listview = view.findViewById(R.id.listView);
+                        if (listview!=null) {
+                            listview.setAdapter(adapter);
+                        }
+
+                        /*String path = result.getPath();
+                        int timeTaken = result.getTotalTime();
+                        fragment_text.setText(String.format("Path: %s\nTime taken: %s",
+                               path, timeTaken));*/
+
+                       // the prints below are just to check if data is being passed properly
+                       System.out.println(result.getPath());
+                       System.out.println(result.getTotalTime());
+                       System.out.println(result.getInterchanges().size());
+                       for (Subroute sr:result.getSubroutes()) {
+                           System.out.println(sr.getLine());
+                           System.out.println("Towards " + sr.getDirection());
+                           System.out.println(sr.getNoOfStations());
+                           System.out.print(sr.getNoOfMins() + "\n");
+                       }
+
+                   }
+                   else
+                       Toast.makeText(getContext(), "Please input valid stations",
+                               Toast.LENGTH_SHORT).show();
+                    /*Map<String, Integer> pathData = Dijkstra.
                             shortestPathAndDistanceFromSourceToDestination(startingStationName,
                                     destinationName, graph);
                     if (pathData != null) {
@@ -79,7 +113,7 @@ public class RouteFragment extends Fragment {
                     }
                     else
                         Toast.makeText(getContext(), "Please input valid stations",
-                                Toast.LENGTH_SHORT).show();
+                                Toast.LENGTH_SHORT).show();*/
                }
            });
 

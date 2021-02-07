@@ -28,7 +28,7 @@ public class Graph
 	
 	public Node findNode(String nodeName)
 	{
-		Optional<Node> node = nodes.stream().filter(x -> x.getName().equals(nodeName)).findFirst();
+		Optional<Node> node = nodes.stream().filter(x -> x.getName().equalsIgnoreCase(nodeName)).findFirst();
 		return node.isPresent() ? node.get() : null;
 	}
 	
