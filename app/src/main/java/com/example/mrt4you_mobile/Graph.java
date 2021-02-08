@@ -1,8 +1,21 @@
 package com.example.mrt4you_mobile;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
+import java.net.ProtocolException;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -544,5 +557,66 @@ public class Graph
 		graph.addNode(jurongEast);
 		
 		return graph;
+	}
+	
+	public void updateGraphFromWebAPI() throws JSONException, IOException
+	{
+		URL url = new URL("http://10.0.2.2:63414/api/StationOnLines");
+		HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
+		urlConnection.setRequestMethod("GET");
+		BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(urlConnection.getInputStream()));
+		String inputLine;
+		StringBuffer content = new StringBuffer();
+		while ((inputLine = bufferedReader.readLine()) != null)
+		{
+			content.append(inputLine);
+		}
+		bufferedReader.close();
+		urlConnection.disconnect();
+
+		JSONArray jsonArray = new JSONArray(content.toString());
+
+		for (int i = 0; i < jsonArray.length(); i++)
+		{
+			JSONObject jsonObject = jsonArray.getJSONObject(i);
+
+			String stationName = jsonObject.get("stationName").toString();
+			String stationCode = jsonObject.get("stationCode").toString();
+			int timeToNextStation = Integer.parseInt(jsonObject.get("timeToNextStation").toString());
+			int timeToNextStationOpp = Integer.parseInt(jsonObject.get("timeToNextStationOpp").toString());
+
+			if (timeToNextStation >= 2147482647)
+				timeToNextStation = Integer.MAX_VALUE;
+			if (timeToNextStationOpp >= 2147482647)
+				timeToNextStationOpp = Integer.MAX_VALUE;
+
+			Node nodeToUpdate = this.findNode(stationName);
+			List<Node> adjacentNodesToUpdate = nodeToUpdate.adjacentNodes.keySet().stream()
+					.filter(x -> x.hasStationCodeStartingWith(stationCode.substring(0, 2)))
+					.collect(Collectors.toList());
+
+			if (adjacentNodesToUpdate.size() <= 1)
+			{
+				Node destination = adjacentNodesToUpdate.get(0);
+				if (nodeToUpdate.isBeforeStationAndOnSameLine(destination))
+					nodeToUpdate.addDestination(destination, timeToNextStationOpp);
+				else
+					nodeToUpdate.addDestination(destination, timeToNextStation);
+			}
+			else
+			{
+				Node destination1 = adjacentNodesToUpdate.get(0);
+				if (nodeToUpdate.isBeforeStationAndOnSameLine(destination1))
+				{
+					nodeToUpdate.addDestination(destination1, timeToNextStationOpp);
+					nodeToUpdate.addDestination(adjacentNodesToUpdate.get(1), timeToNextStation);
+				}
+				else
+				{
+					nodeToUpdate.addDestination(destination1, timeToNextStation);
+					nodeToUpdate.addDestination(adjacentNodesToUpdate.get(1), timeToNextStationOpp);
+				}
+			}
+		}
 	}
 }

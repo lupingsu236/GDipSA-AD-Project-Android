@@ -12,6 +12,10 @@ import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.Toast;
 
+import org.json.JSONException;
+
+import java.io.IOException;
+
 public class SearchRouteActivity extends BaseActivity {
 
     @Override
@@ -35,28 +39,49 @@ public class SearchRouteActivity extends BaseActivity {
             }
             else
             {
-                Graph graph = Graph.createMRTGraph();
-                Route result = Dijkstra.
-                        shortestPathAndDistanceFromSourceToDestination(startingStationName,
-                                destinationName, graph);
-                if (result != null) {
-                    replaceRouteFragment(result);
-
-                    // the prints below are just to check if data is being passed properly
-                    System.out.println(result.getPath());
-                    System.out.println(result.getTotalTime());
-                    System.out.println(result.getInterchanges().size());
-                    for (Subroute sr:result.getSubroutes()) {
-                        System.out.println(sr.getLine());
-                        System.out.println("Towards " + sr.getDirection());
-                        System.out.println(sr.getNoOfStations());
-                        System.out.print(sr.getNoOfMins() + "\n");
+                new Thread(() ->
+                {
+                    Graph graph = Graph.createMRTGraph();
+                    try
+                    {
+                        graph.updateGraphFromWebAPI();
+                    }
+                    catch (JSONException e)
+                    {
+                        e.printStackTrace();
+                    }
+                    catch (IOException e)
+                    {
+                        e.printStackTrace();
+                    }
+                    Route result = Dijkstra.shortestPathAndDistanceFromSourceToDestination(startingStationName, destinationName, graph);
+                    if (result != null)
+                    {
+                        runOnUiThread(() ->
+                        {
+                            replaceRouteFragment(result);
+                            // the prints below are just to check if data is being passed properly
+                            System.out.println(result.getPath());
+                            System.out.println(result.getTotalTime());
+                            System.out.println(result.getInterchanges().size());
+                            for (Subroute sr:result.getSubroutes()) {
+                                System.out.println(sr.getLine());
+                                System.out.println("Towards " + sr.getDirection());
+                                System.out.println(sr.getNoOfStations());
+                                System.out.print(sr.getNoOfMins() + "\n");
+                            }
+                        });
+                    }
+                    else
+                    {
+                        runOnUiThread(() ->
+                        {
+                                Toast.makeText(this, "Please input valid stations/no path",
+                                        Toast.LENGTH_SHORT).show();
+                        });
                     }
 
-                }
-                else
-                    Toast.makeText(this, "Please input valid stations",
-                            Toast.LENGTH_SHORT).show();
+                }).start();
             }
         });
     }

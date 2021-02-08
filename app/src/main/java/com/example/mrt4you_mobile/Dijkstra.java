@@ -10,7 +10,8 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.Set;
 
-public class Dijkstra {
+public class Dijkstra
+{
 	public static Graph calculateShortestPathFromSource(Graph graph, Node source) {
 		source.setDistance(0);
 
