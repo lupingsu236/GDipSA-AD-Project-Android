@@ -66,7 +66,7 @@ public class Graph
 		angMoKio.setStationCode(new ArrayList<>(Arrays.asList("NS16")));
 		Node bishan = new Node("Bishan");
 		bishan.setStationCode(new ArrayList<>(Arrays.asList("NS17", "CC15")));
-		Node braddell = new Node("Bradell");
+		Node braddell = new Node("Braddell");
 		braddell.setStationCode(new ArrayList<>(Arrays.asList("NS18")));
 		Node toaPayoh = new Node("Toa Payoh");
 		toaPayoh.setStationCode(new ArrayList<>(Arrays.asList("NS19")));
