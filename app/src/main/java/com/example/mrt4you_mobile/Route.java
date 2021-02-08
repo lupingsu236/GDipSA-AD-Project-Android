@@ -1,14 +1,18 @@
 package com.example.mrt4you_mobile;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Route {
+public class Route implements Serializable {
     private int totalTime;
     private List<Subroute> subroutes = new ArrayList<>();
     private List<Node> interchanges = new ArrayList<>();
+    private String start;
+    private String end;
     private String path;
 
+    public Route() { }
     public Route(int totalTime) {
         this.totalTime = totalTime;
     }
@@ -35,6 +39,22 @@ public class Route {
 
     public void setInterchanges(List<Node> interchanges) {
         this.interchanges = interchanges;
+    }
+
+    public String getStart() {
+        return start;
+    }
+
+    public void setStart(String start) {
+        this.start = start;
+    }
+
+    public String getEnd() {
+        return end;
+    }
+
+    public void setEnd(String end) {
+        this.end = end;
     }
 
     public String getPath() {

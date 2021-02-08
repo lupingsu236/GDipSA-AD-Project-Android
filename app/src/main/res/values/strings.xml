@@ -16,4 +16,7 @@
     <string name="zoom_button_for_map">zoom button for map</string>
     <string name="starting_station">Starting Station</string>
     <string name="destination">Destination</string>
+    <string name="line_label">line label</string>
+    <string name="change_icon">change icon</string>
+    <string name="image_for_line">image for line</string>
 </resources>

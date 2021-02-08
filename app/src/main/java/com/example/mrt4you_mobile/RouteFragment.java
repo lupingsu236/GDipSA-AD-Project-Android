@@ -5,6 +5,7 @@ import android.os.Bundle;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.ListFragment;
 
+import android.os.Environment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,11 +16,24 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import org.w3c.dom.Text;
+
+import java.io.BufferedReader;
+import java.io.DataInputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 
 public class RouteFragment extends Fragment {
 
+    private boolean isRouteSaved;
     public RouteFragment() {
         // Required empty public constructor
     }
@@ -35,89 +49,158 @@ public class RouteFragment extends Fragment {
     public void onStart() {
         super.onStart();
 
-        String route = "";
         View view = getView();
         if(view!=null) {
+            ImageButton bookmark = view.findViewById(R.id.bookmark);
+            ListView listview = view.findViewById(R.id.listView);
+            TextView route_timing = view.findViewById(R.id.route_timing);
             Bundle bundle = getArguments();
             if (bundle!=null) {
-                route = bundle.getString("route");
-                ImageButton bookmark = view.findViewById(R.id.bookmark);
-                bookmark.setVisibility(View.VISIBLE);
-                ImageButton tobookmark = view.findViewById(R.id.tobookmark);
-                tobookmark.setVisibility(View.GONE);
-             }
-           /*TextView fragment_text = view.findViewById(R.id.textinput_placeholder);
-           fragment_text.setText(route);*/
+                Route route = (Route) bundle.getSerializable("route");
+                isRouteSaved = checkIfSaved(route.getStart(), route.getEnd());
 
-           ImageButton searchBtn = view.findViewById(R.id.searchBtn);
-           AutoCompleteTextView startingStation = view.findViewById(R.id.starting_station);
-           AutoCompleteTextView destination = view.findViewById(R.id.destination);
-
-           searchBtn.setOnClickListener(v -> {
-
-               String startingStationName = startingStation.getText().toString();
-               String destinationName = destination.getText().toString();
-
-               if (startingStationName.isEmpty() || destinationName.isEmpty())
-               {
-                   Toast.makeText(getContext(), "Please input starting station and " +
-                           "destination", Toast.LENGTH_SHORT).show();
-               }
-               else
-               {
-                    Graph graph = Graph.createMRTGraph();
-                    Route result = Dijkstra.
-                           shortestPathAndDistanceFromSourceToDestination(startingStationName,
-                                   destinationName, graph);
-                    if (result != null) {
-                        RouteDisplayAdapter adapter = new RouteDisplayAdapter(getActivity(), 0);
-                        adapter.setData(result);
-
-                        ListView listview = view.findViewById(R.id.listView);
-                        if (listview!=null) {
-                            listview.setAdapter(adapter);
-                        }
-
-                        /*String path = result.getPath();
-                        int timeTaken = result.getTotalTime();
-                        fragment_text.setText(String.format("Path: %s\nTime taken: %s",
-                               path, timeTaken));*/
-
-                       // the prints below are just to check if data is being passed properly
-                       System.out.println(result.getPath());
-                       System.out.println(result.getTotalTime());
-                       System.out.println(result.getInterchanges().size());
-                       for (Subroute sr:result.getSubroutes()) {
-                           System.out.println(sr.getLine());
-                           System.out.println("Towards " + sr.getDirection());
-                           System.out.println(sr.getNoOfStations());
-                           System.out.print(sr.getNoOfMins() + "\n");
-                       }
-
-                   }
-                   else
-                       Toast.makeText(getContext(), "Please input valid stations",
-                               Toast.LENGTH_SHORT).show();
-                    /*Map<String, Integer> pathData = Dijkstra.
-                            shortestPathAndDistanceFromSourceToDestination(startingStationName,
-                                    destinationName, graph);
-                    if (pathData != null) {
-                        String path = pathData.keySet().stream().findFirst().get();
-                        int timeTaken = pathData.get(pathData.keySet().stream().findFirst().get());
-                        fragment_text.setText(String.format("Path: %s\nTime taken: %s",
-                                path, timeTaken));
-
-                        // the prints below are just to check if data is being passed properly
-                        System.out.println(pathData.keySet().stream().findFirst().get());
-                        System.out.println(pathData.get(pathData.keySet().stream().findFirst().get()));
+                int change_timing=0;
+                for(Node ic : route.getInterchanges()) {
+                    if (ic.getName().equals("City Hall") || ic.getName().equals("Raffles Place")) {
+                        change_timing+=5;
+                    } else {
+                        change_timing+=7;
                     }
-                    else
-                        Toast.makeText(getContext(), "Please input valid stations",
-                                Toast.LENGTH_SHORT).show();*/
-               }
-           });
+                }
+                if (change_timing!=0) {
+                    route_timing.setText(route.getTotalTime() + " + " + change_timing + " min");
+                } else {
+                    route_timing.setText(route.getTotalTime() + " min");
+                }
+
+
+                if(isRouteSaved) {
+                    bookmark.setImageResource(R.drawable.ic_action_saved);
+                } else {
+                    bookmark.setImageResource(R.drawable.ic_action_tobookmark);
+                }
+
+                bookmark.setOnClickListener(v -> {
+                    if(isRouteSaved) {
+                        boolean deleted = deleteRoute(route.getStart(), route.getEnd());
+                        String message;
+                        if (deleted) {
+                            message = "Route deleted!";
+                            bookmark.setImageResource(R.drawable.ic_action_tobookmark);
+                        } else {
+                            message = "Error deleting!";
+                        }
+                        Toast.makeText(getActivity(), message, Toast.LENGTH_LONG).show();
+
+                    } else {
+                        boolean saved = saveRoute(route.getStart(), route.getEnd());
+                        String message;
+                        if (saved) {
+                            message = "Route saved!";
+                            bookmark.setImageResource(R.drawable.ic_action_saved);
+                        } else {
+                            message = "Error saving!";
+                        }
+                        Toast.makeText(getActivity(), message, Toast.LENGTH_LONG).show();
+                    }
+
+                    isRouteSaved = !isRouteSaved;
+                });
+
+                RouteDisplayAdapter adapter = new RouteDisplayAdapter(getActivity(), 0);
+                adapter.setData(route);
+
+                if (listview!=null) {
+                    listview.setAdapter(adapter);
+                }
+             } else {
+                //add empty fragment
+                route_timing.setVisibility(View.GONE);
+                bookmark.setVisibility(View.GONE);
+                listview.setVisibility(View.GONE);
+
+            }
 
         }
 
     }
+
+    private boolean checkIfSaved(String start, String end) {
+        String content = readSavedRoutes();
+        String[] saved_routes;
+        if (content!=null)  {
+            saved_routes = content.split(";");
+            for (String saved_route : saved_routes) {
+                if (saved_route.equals(start+","+end)) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+
+    private boolean saveRoute(String start, String end) {
+        boolean success;
+        File dir = getActivity().getExternalFilesDir(Environment.DIRECTORY_DOCUMENTS);
+        File file = new File(dir, "saved_routes.txt");
+        if (file.exists()) {
+            success = writeSavedRoutes(start+","+end+";",true);
+        } else {
+            success = writeSavedRoutes(start+","+end+";", false);
+        }
+        return success;
+    }
+
+    private boolean deleteRoute(String start, String end) {
+        String content = readSavedRoutes();
+
+        String[] saved_routes;
+        StringBuilder new_saved_routes= new StringBuilder();
+        if (content!=null)  {
+            saved_routes = content.split(";");
+            for (String saved_route : saved_routes) {
+                if (!saved_route.equals(start + "," + end)) {
+                    new_saved_routes.append(saved_route).append(";");
+                }
+            }
+        }
+
+        return writeSavedRoutes(new_saved_routes.toString(), false);
+    }
+
+    private String readSavedRoutes() {
+        File dir = getActivity().getExternalFilesDir(Environment.DIRECTORY_DOCUMENTS);
+        File file = new File(dir, "saved_routes.txt");
+        String content;
+        try {
+            FileInputStream fis = new FileInputStream(file);
+            DataInputStream in = new DataInputStream(fis);
+            BufferedReader br = new BufferedReader(new InputStreamReader(in));
+            content = br.readLine();
+            in.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+        return content;
+
+    }
+
+    private boolean writeSavedRoutes(String content, boolean toAppend) {
+        File dir = getActivity().getExternalFilesDir(Environment.DIRECTORY_DOCUMENTS);
+        File file = new File(dir, "saved_routes.txt");
+
+        try {
+            FileOutputStream fos = new FileOutputStream(file, toAppend);
+            OutputStreamWriter osw = new OutputStreamWriter(fos);
+            osw.write(content);
+            osw.close();
+            return true;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
 }

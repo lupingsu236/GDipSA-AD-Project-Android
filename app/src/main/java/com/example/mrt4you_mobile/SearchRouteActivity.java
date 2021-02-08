@@ -6,14 +6,59 @@ import androidx.fragment.app.FragmentTransaction;
 
 import android.app.Activity;
 import android.os.Bundle;
+import android.widget.AutoCompleteTextView;
 import android.widget.Button;
+import android.widget.ImageButton;
+import android.widget.ListView;
+import android.widget.Toast;
 
 public class SearchRouteActivity extends BaseActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        replaceRouteFragment();
+        replaceRouteFragment(null);
+
+        ImageButton searchBtn = findViewById(R.id.searchBtn);
+        AutoCompleteTextView startingStation = findViewById(R.id.starting_station);
+        AutoCompleteTextView destination = findViewById(R.id.destination);
+
+        searchBtn.setOnClickListener(v -> {
+
+            String startingStationName = startingStation.getText().toString().trim();
+            String destinationName = destination.getText().toString().trim();
+
+            if (startingStationName.isEmpty() || destinationName.isEmpty())
+            {
+                Toast.makeText(this, "Please input starting station and " +
+                        "destination", Toast.LENGTH_SHORT).show();
+            }
+            else
+            {
+                Graph graph = Graph.createMRTGraph();
+                Route result = Dijkstra.
+                        shortestPathAndDistanceFromSourceToDestination(startingStationName,
+                                destinationName, graph);
+                if (result != null) {
+                    replaceRouteFragment(result);
+
+                    // the prints below are just to check if data is being passed properly
+                    System.out.println(result.getPath());
+                    System.out.println(result.getTotalTime());
+                    System.out.println(result.getInterchanges().size());
+                    for (Subroute sr:result.getSubroutes()) {
+                        System.out.println(sr.getLine());
+                        System.out.println("Towards " + sr.getDirection());
+                        System.out.println(sr.getNoOfStations());
+                        System.out.print(sr.getNoOfMins() + "\n");
+                    }
+
+                }
+                else
+                    Toast.makeText(this, "Please input valid stations",
+                            Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 
     @Override
@@ -26,16 +71,23 @@ public class SearchRouteActivity extends BaseActivity {
         return R.id.action_search;
     }
 
-    public void replaceRouteFragment() {
+    public void replaceRouteFragment(Route route) {
         RouteFragment fragment = new RouteFragment();
+        if (route!=null) {
+            Bundle arguments = new Bundle();
+            arguments.putSerializable("route", route);
+            fragment.setArguments(arguments);
+        }
         FragmentManager fm = getSupportFragmentManager();
         FragmentTransaction trans = fm.beginTransaction();
         trans.replace(R.id.fragment_route_container, fragment);
-        trans.addToBackStack(null);
+        if(route!=null) {
+            trans.addToBackStack(null);
+        }
         trans.commit();
     }
 
-    @Override
+/*    @Override
     public void onBackPressed()
     {
         //if back stack only consist of the first fragment insertion, exit app
@@ -45,5 +97,5 @@ public class SearchRouteActivity extends BaseActivity {
         } else {
             super.onBackPressed();
         }
-    }
+    }*/
 }
