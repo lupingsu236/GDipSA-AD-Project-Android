@@ -12,7 +12,10 @@ import java.util.Set;
 
 public class Dijkstra
 {
-	public static Graph calculateShortestPathFromSource(Graph graph, Node source) {
+	private static final int INFINITY = 2000000000;
+
+	public static Graph calculateShortestPathFromSource(Graph graph, Node source)
+	{
 		source.setDistance(0);
 
 		Set<Node> settledNodes = new HashSet<>();
@@ -38,7 +41,7 @@ public class Dijkstra
 
 	private static Node getLowestDistanceNode(Set<Node> unsettledNodes) {
 		Node lowestDistanceNode = null;
-		int lowestDistance = Integer.MAX_VALUE;
+		int lowestDistance = INFINITY;
 		for (Node node : unsettledNodes) {
 			int nodeDistance = node.getDistance();
 			if (nodeDistance <= lowestDistance) {
@@ -78,8 +81,10 @@ public class Dijkstra
 
 			Graph optimizedGraph = calculateShortestPathFromSource(graph, source);
 
-			if (destination.getDistance() >= Integer.MAX_VALUE)
+			if (destination.getDistance() >= INFINITY)
+			{
 				return null;
+			}
 			else {
 				List<Node> shortestPath = optimizedGraph.getNodes().stream()
 						.filter(x -> x.getName().equals(destination.getName()))

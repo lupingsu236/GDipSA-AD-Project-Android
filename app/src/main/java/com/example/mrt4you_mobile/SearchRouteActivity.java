@@ -54,33 +54,32 @@ public class SearchRouteActivity extends BaseActivity {
                     {
                         e.printStackTrace();
                     }
-                    Route result = Dijkstra.shortestPathAndDistanceFromSourceToDestination(startingStationName, destinationName, graph);
-                    if (result != null)
+                    runOnUiThread(() ->
                     {
-                        runOnUiThread(() ->
+                        Route result = Dijkstra
+                                .shortestPathAndDistanceFromSourceToDestination
+                                        (startingStationName, destinationName, graph);
+                        if (result != null)
                         {
                             replaceRouteFragment(result);
                             // the prints below are just to check if data is being passed properly
                             System.out.println(result.getPath());
                             System.out.println(result.getTotalTime());
                             System.out.println(result.getInterchanges().size());
-                            for (Subroute sr:result.getSubroutes()) {
+                            for (Subroute sr : result.getSubroutes())
+                            {
                                 System.out.println(sr.getLine());
                                 System.out.println("Towards " + sr.getDirection());
                                 System.out.println(sr.getNoOfStations());
                                 System.out.print(sr.getNoOfMins() + "\n");
                             }
-                        });
-                    }
-                    else
-                    {
-                        runOnUiThread(() ->
+                        }
+                        else
                         {
-                                Toast.makeText(this, "Please input valid stations/no path",
-                                        Toast.LENGTH_SHORT).show();
-                        });
-                    }
-
+                            Toast.makeText(this, "Please input valid stations/no path",
+                                    Toast.LENGTH_SHORT).show();
+                        }
+                    });
                 }).start();
             }
         });

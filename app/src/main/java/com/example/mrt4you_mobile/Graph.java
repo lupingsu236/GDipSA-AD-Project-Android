@@ -585,11 +585,6 @@ public class Graph
 			int timeToNextStation = Integer.parseInt(jsonObject.get("timeToNextStation").toString());
 			int timeToNextStationOpp = Integer.parseInt(jsonObject.get("timeToNextStationOpp").toString());
 
-			if (timeToNextStation >= 2147482647)
-				timeToNextStation = Integer.MAX_VALUE;
-			if (timeToNextStationOpp >= 2147482647)
-				timeToNextStationOpp = Integer.MAX_VALUE;
-
 			Node nodeToUpdate = this.findNode(stationName);
 			List<Node> adjacentNodesToUpdate = nodeToUpdate.adjacentNodes.keySet().stream()
 					.filter(x -> x.hasStationCodeStartingWith(stationCode.substring(0, 2)))

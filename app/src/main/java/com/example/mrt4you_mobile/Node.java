@@ -11,10 +11,11 @@ import java.util.stream.Collectors;
 
 public class Node 
 {
+	private static final int INFINITY = 2000000000;
     private String name;
     private List<String> stationCode = new ArrayList<>();
     private List<Node> shortestPath = new LinkedList<>();
-    private Integer distance = Integer.MAX_VALUE;
+    private Integer distance = INFINITY;
     Map<Node, Integer> adjacentNodes = new HashMap<>();
 
     public void addDestination(Node destination, int distance) 
