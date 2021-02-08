@@ -7,6 +7,7 @@
     tools:context=".SearchRouteActivity">
 
     <TextView
+        android:id="@+id/search_route_title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/search_route"
@@ -18,10 +19,96 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.041" />
 
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/search_bars"
+        android:layout_width="400dp"
+        android:layout_height="120dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/search_route_title"
+        app:layout_constraintVertical_bias="0.02">
+
+        <ImageView
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:layout_marginStart="20dp"
+            android:layout_marginTop="17dp"
+            android:contentDescription="@string/starting_station"
+            android:src="@drawable/circle"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <ImageView
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:layout_marginStart="20dp"
+            android:layout_marginTop="44dp"
+            android:contentDescription="to"
+            android:src="@drawable/ellipsis"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <ImageView
+            android:layout_width="28dp"
+            android:layout_height="28dp"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="70dp"
+            android:contentDescription="@string/destination"
+            android:src="@drawable/location"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+
+        <AutoCompleteTextView
+            android:id="@+id/starting_station"
+            android:layout_width="260dp"
+            android:layout_height="40dp"
+            android:layout_marginStart="60dp"
+            android:layout_marginTop="8dp"
+            android:background="@drawable/edit_text_border"
+            android:completionHint="@string/starting_station"
+            android:hint="@string/starting_station"
+            android:padding="8dp"
+            android:textSize="18sp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <AutoCompleteTextView
+            android:id="@+id/destination"
+            android:layout_width="260dp"
+            android:layout_height="40dp"
+            android:layout_marginStart="60dp"
+            android:layout_marginTop="60dp"
+            android:background="@drawable/edit_text_border"
+            android:completionHint="@string/destination"
+            android:hint="@string/destination"
+            android:padding="8dp"
+            android:textSize="18sp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"/>
+
+
+
+        <ImageButton
+            android:id="@+id/searchBtn"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:layout_gravity="center_vertical|end"
+            android:layout_marginTop="28dp"
+            android:layout_marginEnd="16dp"
+            android:contentDescription="@string/search"
+            android:scaleType="centerCrop"
+            android:src="@drawable/ic_action_search"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+
     <FrameLayout
         android:id="@+id/fragment_route_container"
         android:layout_width="360dp"
-        android:layout_height="520dp"
+        android:layout_height="400dp"
         android:layout_marginBottom="65dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"

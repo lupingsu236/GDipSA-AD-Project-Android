@@ -1,14 +1,16 @@
 package com.example.mrt4you_mobile;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Route {
+public class Route implements Serializable {
     private int totalTime;
     private List<Subroute> subroutes = new ArrayList<>();
     private List<Node> interchanges = new ArrayList<>();
     private String path;
 
+    public Route() { }
     public Route(int totalTime) {
         this.totalTime = totalTime;
     }

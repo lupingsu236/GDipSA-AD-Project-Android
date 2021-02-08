@@ -57,23 +57,45 @@ public class RouteDisplayAdapter extends ArrayAdapter {
         if (pos==0) {
            start = subroute.getStations().get(0);
         } else {
-            start = route.getSubroutes().get(pos-1).getStations().get(route.getSubroutes().get(pos-1).getStations().size()-1);
+            start = route.getInterchanges().get(pos-1);
         }
-
-        subroute_start.setText(start.getName());
-
+        // find appropriate station code for display
+        String start_stationCode = getStationCodeForLine(subroute.getLine(), start);
+        subroute_start.setText(start_stationCode + ": " + start.getName());
 
         TextView subroute_direction = view.findViewById(R.id.subroute_direction);
         subroute_direction.setText("Towards " + subroute.getDirection());
 
         TextView subroute_stops = view.findViewById(R.id.subroute_stops);
-        subroute_stops.setText("Ride " + subroute.getNoOfStations() + " Stops (" + subroute.getNoOfMins() + " min)");
+        subroute_stops.setText("> Ride " + subroute.getNoOfStations() + " Stops (" + subroute.getNoOfMins() + " min)");
 
         TextView subroute_destination = view.findViewById(R.id.subroute_destination);
         Node end = subroute.getStations().get(subroute.getStations().size()-1);
-        subroute_destination.setText(end.getName());
+        // find appropriate station code for display
+        String end_stationCode = getStationCodeForLine(subroute.getLine(), end);
+        subroute_destination.setText(end_stationCode + ": " + end.getName());
+
+
+        if(route.getSubroutes().size()>1 && pos!=route.getSubroutes().size()-1) {
+            ImageView change_icon = view.findViewById(R.id.change_icon);
+            change_icon.setVisibility(View.VISIBLE);
+        }
 
 
         return view;
+    }
+
+    private String getStationCodeForLine(String line, Node station) {
+        if (station.getStationCode().size()==1) {
+            return station.getStationCode().get(0);
+        } else {
+            for (String sc : station.getStationCode()) {
+                if (sc.substring(0,2).equals(line)) {
+                    return sc;
+                }
+            }
+        }
+
+        return "";
     }
 }

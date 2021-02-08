@@ -35,87 +35,33 @@ public class RouteFragment extends Fragment {
     public void onStart() {
         super.onStart();
 
-        String route = "";
         View view = getView();
         if(view!=null) {
+            ImageButton bookmark = view.findViewById(R.id.bookmark);
+            ImageButton tobookmark = view.findViewById(R.id.tobookmark);
+            ListView listview = view.findViewById(R.id.listView);
             Bundle bundle = getArguments();
             if (bundle!=null) {
-                route = bundle.getString("route");
-                ImageButton bookmark = view.findViewById(R.id.bookmark);
-                bookmark.setVisibility(View.VISIBLE);
-                ImageButton tobookmark = view.findViewById(R.id.tobookmark);
+                Route route = (Route) bundle.getSerializable("route");
+                boolean isRouteSaved = bundle.getBoolean("isRoutedSaved");
+
+                if(isRouteSaved) {
+                    bookmark.setVisibility(View.VISIBLE);
+                    tobookmark.setVisibility(View.GONE);
+                }
+
+                RouteDisplayAdapter adapter = new RouteDisplayAdapter(getActivity(), 0);
+                adapter.setData(route);
+
+                if (listview!=null) {
+                    listview.setAdapter(adapter);
+                }
+             } else {
+                //add empty fragment
                 tobookmark.setVisibility(View.GONE);
-             }
-           /*TextView fragment_text = view.findViewById(R.id.textinput_placeholder);
-           fragment_text.setText(route);*/
+                listview.setVisibility(View.GONE);
 
-           ImageButton searchBtn = view.findViewById(R.id.searchBtn);
-           AutoCompleteTextView startingStation = view.findViewById(R.id.starting_station);
-           AutoCompleteTextView destination = view.findViewById(R.id.destination);
-
-           searchBtn.setOnClickListener(v -> {
-
-               String startingStationName = startingStation.getText().toString();
-               String destinationName = destination.getText().toString();
-
-               if (startingStationName.isEmpty() || destinationName.isEmpty())
-               {
-                   Toast.makeText(getContext(), "Please input starting station and " +
-                           "destination", Toast.LENGTH_SHORT).show();
-               }
-               else
-               {
-                    Graph graph = Graph.createMRTGraph();
-                    Route result = Dijkstra.
-                           shortestPathAndDistanceFromSourceToDestination(startingStationName,
-                                   destinationName, graph);
-                    if (result != null) {
-                        RouteDisplayAdapter adapter = new RouteDisplayAdapter(getActivity(), 0);
-                        adapter.setData(result);
-
-                        ListView listview = view.findViewById(R.id.listView);
-                        if (listview!=null) {
-                            listview.setAdapter(adapter);
-                        }
-
-                        /*String path = result.getPath();
-                        int timeTaken = result.getTotalTime();
-                        fragment_text.setText(String.format("Path: %s\nTime taken: %s",
-                               path, timeTaken));*/
-
-                       // the prints below are just to check if data is being passed properly
-                       System.out.println(result.getPath());
-                       System.out.println(result.getTotalTime());
-                       System.out.println(result.getInterchanges().size());
-                       for (Subroute sr:result.getSubroutes()) {
-                           System.out.println(sr.getLine());
-                           System.out.println("Towards " + sr.getDirection());
-                           System.out.println(sr.getNoOfStations());
-                           System.out.print(sr.getNoOfMins() + "\n");
-                       }
-
-                   }
-                   else
-                       Toast.makeText(getContext(), "Please input valid stations",
-                               Toast.LENGTH_SHORT).show();
-                    /*Map<String, Integer> pathData = Dijkstra.
-                            shortestPathAndDistanceFromSourceToDestination(startingStationName,
-                                    destinationName, graph);
-                    if (pathData != null) {
-                        String path = pathData.keySet().stream().findFirst().get();
-                        int timeTaken = pathData.get(pathData.keySet().stream().findFirst().get());
-                        fragment_text.setText(String.format("Path: %s\nTime taken: %s",
-                                path, timeTaken));
-
-                        // the prints below are just to check if data is being passed properly
-                        System.out.println(pathData.keySet().stream().findFirst().get());
-                        System.out.println(pathData.get(pathData.keySet().stream().findFirst().get()));
-                    }
-                    else
-                        Toast.makeText(getContext(), "Please input valid stations",
-                                Toast.LENGTH_SHORT).show();*/
-               }
-           });
+            }
 
         }
 
