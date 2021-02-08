@@ -76,7 +76,10 @@ public class RouteFragment extends Fragment {
 
                 if(isRouteSaved) {
                     bookmark.setImageResource(R.drawable.ic_action_saved);
+                } else {
+                    bookmark.setImageResource(R.drawable.ic_action_tobookmark);
                 }
+
                 bookmark.setOnClickListener(v -> {
                     if(isRouteSaved) {
                         boolean deleted = deleteRoute(route.getStart(), route.getEnd());
@@ -123,62 +126,50 @@ public class RouteFragment extends Fragment {
     }
 
     private boolean checkIfSaved(String start, String end) {
-        File dir = getActivity().getExternalFilesDir(Environment.DIRECTORY_DOCUMENTS);
-        File file = new File(dir, "saved_routes.txt");
-        String content;
-        try {
-            FileInputStream fis = new FileInputStream(file);
-            DataInputStream in = new DataInputStream(fis);
-            BufferedReader br = new BufferedReader(new InputStreamReader(in));
-            content = br.readLine();
-            in.close();
-        } catch (Exception e) {
-            e.printStackTrace();
-            return false;
-        }
-
+        String content = readSavedRoutes();
         String[] saved_routes;
         if (content!=null)  {
             saved_routes = content.split(";");
             for (String saved_route : saved_routes) {
-                if (!saved_route.equals(start + "," + end)) {
+                if (saved_route.equals(start+","+end)) {
                     return true;
                 }
             }
         }
-
         return false;
     }
 
+
     private boolean saveRoute(String start, String end) {
+        boolean success;
         File dir = getActivity().getExternalFilesDir(Environment.DIRECTORY_DOCUMENTS);
         File file = new File(dir, "saved_routes.txt");
         if (file.exists()) {
-            try {
-                FileOutputStream fos = new FileOutputStream(file, true);
-                OutputStreamWriter osw = new OutputStreamWriter(fos);
-                osw.write(start + "," + end + ";");
-                osw.close();
-                return true;
-            } catch (Exception e) {
-                e.printStackTrace();
-                return false;
-            }
+            success = writeSavedRoutes(start+","+end+";",true);
         } else {
-            try {
-                FileOutputStream fos = new FileOutputStream(file);
-                OutputStreamWriter osw = new OutputStreamWriter(fos);
-                osw.write(start + "," + end + ";");
-                osw.close();
-                return true;
-            } catch (Exception e) {
-                e.printStackTrace();
-                return false;
-            }
+            success = writeSavedRoutes(start+","+end+";", false);
         }
+        return success;
     }
 
     private boolean deleteRoute(String start, String end) {
+        String content = readSavedRoutes();
+
+        String[] saved_routes;
+        StringBuilder new_saved_routes= new StringBuilder();
+        if (content!=null)  {
+            saved_routes = content.split(";");
+            for (String saved_route : saved_routes) {
+                if (!saved_route.equals(start + "," + end)) {
+                    new_saved_routes.append(saved_route).append(";");
+                }
+            }
+        }
+
+        return writeSavedRoutes(new_saved_routes.toString(), false);
+    }
+
+    private String readSavedRoutes() {
         File dir = getActivity().getExternalFilesDir(Environment.DIRECTORY_DOCUMENTS);
         File file = new File(dir, "saved_routes.txt");
         String content;
@@ -190,30 +181,26 @@ public class RouteFragment extends Fragment {
             in.close();
         } catch (Exception e) {
             e.printStackTrace();
-            return false;
+            return null;
         }
+        return content;
 
-        String[] saved_routes;
-        String new_saved_routes="";
-        if (content!=null)  {
-            saved_routes = content.split(";");
-            for (String saved_route : saved_routes) {
-                if (!saved_route.equals(start + "," + end)) {
-                    new_saved_routes += saved_route + ";";
-                }
-            }
-        }
+    }
+
+    private boolean writeSavedRoutes(String content, boolean toAppend) {
+        File dir = getActivity().getExternalFilesDir(Environment.DIRECTORY_DOCUMENTS);
+        File file = new File(dir, "saved_routes.txt");
 
         try {
-            FileOutputStream fos = new FileOutputStream(file);
+            FileOutputStream fos = new FileOutputStream(file, toAppend);
             OutputStreamWriter osw = new OutputStreamWriter(fos);
-            osw.write(new_saved_routes);
+            osw.write(content);
             osw.close();
             return true;
         } catch (Exception e) {
             e.printStackTrace();
             return false;
         }
-
     }
+
 }

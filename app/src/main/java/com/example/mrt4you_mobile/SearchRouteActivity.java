@@ -25,8 +25,8 @@ public class SearchRouteActivity extends BaseActivity {
 
         searchBtn.setOnClickListener(v -> {
 
-            String startingStationName = startingStation.getText().toString();
-            String destinationName = destination.getText().toString();
+            String startingStationName = startingStation.getText().toString().trim();
+            String destinationName = destination.getText().toString().trim();
 
             if (startingStationName.isEmpty() || destinationName.isEmpty())
             {
