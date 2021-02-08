@@ -90,6 +90,8 @@ public class Dijkstra {
 					path += node.getName() + " ";
 				}
 				shortestRoute.setPath(path);
+				shortestRoute.setStart(source.getName());
+				shortestRoute.setEnd(destination.getName());
 
 				int counter = 0;
 
