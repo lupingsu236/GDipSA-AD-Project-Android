@@ -6,6 +6,8 @@ import androidx.fragment.app.FragmentTransaction;
 
 import android.app.Activity;
 import android.os.Bundle;
+import android.view.inputmethod.InputMethodManager;
+import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.ImageButton;
@@ -14,20 +16,43 @@ import android.widget.Toast;
 
 import org.json.JSONException;
 
+import java.io.BufferedReader;
+import java.io.DataInputStream;
+import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 
-public class SearchRouteActivity extends BaseActivity {
+public class SearchRouteActivity extends BaseActivity implements RouteFragment.iRouteFragment{
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         replaceRouteFragment(null);
 
-        ImageButton searchBtn = findViewById(R.id.searchBtn);
+        //retrieve list of stations to populate auto-suggestions for search bars
         AutoCompleteTextView startingStation = findViewById(R.id.starting_station);
         AutoCompleteTextView destination = findViewById(R.id.destination);
+        InputStream input = getResources().openRawResource(R.raw.stations);
+        String content;
+        try {
+            content = getStationsFromFile(input);
+            if (content!=null) {
+                String[] stations = content.split(";");
+                ArrayAdapter<String> adapter = new ArrayAdapter<>(this,
+                        R.layout.support_simple_spinner_dropdown_item, stations);
+                startingStation.setAdapter(adapter);
+                destination.setAdapter(adapter);
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
 
+        //set onclicklistener to search button to call shortest path algorithm and
+        //replace fragment with result
+        ImageButton searchBtn = findViewById(R.id.searchBtn);
         searchBtn.setOnClickListener(v -> {
+            hideSoftKeyboard(this);
 
             String startingStationName = startingStation.getText().toString().trim();
             String destinationName = destination.getText().toString().trim();
@@ -46,11 +71,7 @@ public class SearchRouteActivity extends BaseActivity {
                     {
                         graph.updateGraphFromWebAPI();
                     }
-                    catch (JSONException e)
-                    {
-                        e.printStackTrace();
-                    }
-                    catch (IOException e)
+                    catch (JSONException | IOException e)
                     {
                         e.printStackTrace();
                     }
@@ -77,7 +98,8 @@ public class SearchRouteActivity extends BaseActivity {
                     else
                     {
                         runOnUiThread(() -> {
-                            Toast.makeText(this, "Please input valid stations/no path",
+                            replaceRouteFragment(null);
+                            Toast.makeText(this, "There is no path available!",
                                     Toast.LENGTH_SHORT).show();
                         });
                     }
@@ -86,14 +108,14 @@ public class SearchRouteActivity extends BaseActivity {
         });
     }
 
-    @Override
-    int getContentViewId() {
-        return R.layout.activity_search_route;
-    }
-
-    @Override
-    int getNavigationMenuItemId() {
-        return R.id.action_search;
+    private String getStationsFromFile(InputStream input) throws IOException {
+        StringBuilder content = new StringBuilder();
+        String line;
+        BufferedReader br = new BufferedReader(new InputStreamReader(input));
+        while ((line = br.readLine())!=null) {
+            content.append(line).append(";");
+        }
+        return content.toString();
     }
 
     public void replaceRouteFragment(Route route) {
@@ -111,6 +133,28 @@ public class SearchRouteActivity extends BaseActivity {
         }
         trans.commit();
     }
+
+
+    @Override
+    int getContentViewId() {
+        return R.layout.activity_search_route;
+    }
+
+    @Override
+    int getNavigationMenuItemId() {
+        return R.id.action_search;
+    }
+
+    public static void hideSoftKeyboard(Activity activity) {
+        InputMethodManager inputMethodManager =
+                (InputMethodManager) activity.getSystemService(
+                        Activity.INPUT_METHOD_SERVICE);
+        inputMethodManager.hideSoftInputFromWindow(
+                activity.getCurrentFocus().getWindowToken(), 0);
+    }
+
+    @Override
+    public void bookmarkClicked() {}
 
 /*    @Override
     public void onBackPressed()
