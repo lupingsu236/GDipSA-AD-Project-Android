@@ -561,9 +561,10 @@ public class Graph
 	
 	public void updateGraphFromWebAPI() throws JSONException, IOException
 	{
-		URL url = new URL("http://10.0.2.2:63414/api/StationOnLines");
+		URL url = new URL("http://10.0.2.2:63414/api/NonOperationalStations");
 		HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
 		urlConnection.setRequestMethod("GET");
+		urlConnection.setConnectTimeout(1000);
 		BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(urlConnection.getInputStream()));
 		String inputLine;
 		StringBuffer content = new StringBuffer();

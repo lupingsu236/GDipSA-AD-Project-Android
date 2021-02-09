@@ -54,13 +54,12 @@ public class SearchRouteActivity extends BaseActivity {
                     {
                         e.printStackTrace();
                     }
-                    runOnUiThread(() ->
+                    Route result = Dijkstra
+                            .shortestPathAndDistanceFromSourceToDestination
+                                    (startingStationName, destinationName, graph);
+                    if (result != null)
                     {
-                        Route result = Dijkstra
-                                .shortestPathAndDistanceFromSourceToDestination
-                                        (startingStationName, destinationName, graph);
-                        if (result != null)
-                        {
+                        runOnUiThread(() -> {
                             replaceRouteFragment(result);
                             // the prints below are just to check if data is being passed properly
                             System.out.println(result.getPath());
@@ -73,13 +72,15 @@ public class SearchRouteActivity extends BaseActivity {
                                 System.out.println(sr.getNoOfStations());
                                 System.out.print(sr.getNoOfMins() + "\n");
                             }
-                        }
-                        else
-                        {
+                        });
+                    }
+                    else
+                    {
+                        runOnUiThread(() -> {
                             Toast.makeText(this, "Please input valid stations/no path",
                                     Toast.LENGTH_SHORT).show();
-                        }
-                    });
+                        });
+                    }
                 }).start();
             }
         });
