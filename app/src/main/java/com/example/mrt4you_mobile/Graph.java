@@ -561,11 +561,12 @@ public class Graph
 	
 	public void updateGraphFromWebAPI() throws JSONException, IOException
 	{
-		URL url = new URL("http://10.0.2.2:63414/api/StationOnLines");
+		URL url = new URL("http://10.0.2.2:63414/api/NonOperationalStations");
 		HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
 		urlConnection.setRequestMethod("GET");
 		urlConnection.setConnectTimeout(1000);
-		BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(urlConnection.getInputStream()));
+		BufferedReader bufferedReader = new BufferedReader(new InputStreamReader
+				(urlConnection.getInputStream()));
 		String inputLine;
 		StringBuffer content = new StringBuffer();
 		while ((inputLine = bufferedReader.readLine()) != null)
@@ -581,10 +582,12 @@ public class Graph
 		{
 			JSONObject jsonObject = jsonArray.getJSONObject(i);
 
-			String stationName = jsonObject.get("stationName").toString();
+			String stationName = jsonObject.get("stationName").toString().trim();
 			String stationCode = jsonObject.get("stationCode").toString();
-			int timeToNextStation = Integer.parseInt(jsonObject.get("timeToNextStation").toString());
-			int timeToNextStationOpp = Integer.parseInt(jsonObject.get("timeToNextStationOpp").toString());
+			int timeToNextStation = Integer.parseInt(jsonObject.get("timeToNextStation")
+					.toString());
+			int timeToNextStationOpp = Integer.parseInt(jsonObject.get("timeToNextStationOpp")
+					.toString());
 
 			Node nodeToUpdate = this.findNode(stationName);
 			List<Node> adjacentNodesToUpdate = nodeToUpdate.adjacentNodes.keySet().stream()

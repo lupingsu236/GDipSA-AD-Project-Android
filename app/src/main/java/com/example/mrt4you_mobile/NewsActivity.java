@@ -13,6 +13,14 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import org.w3c.dom.Text;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
+import java.net.ProtocolException;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -65,18 +73,24 @@ public class NewsActivity extends BaseActivity
             TextView textTime3 = findViewById(R.id.textTime3);
             timeList.add(textTime3);
 
-            String data = "[{\"stationCode\":\"NS02\",\"stationName\":\"Bukit Batok\"," +
-                    "\"timeToNextStation\":2147482647,\"timeToNextStationOpp\":2,\"currentStatus\":2," +
-                    "\"time\":\"9/2/2021 1:56:29 PM\"}," +
-                    "{\"stationCode\":\"NS03\",\"stationName\":\"Bukit Gombak\",\"timeToNextStation\"" +
-                    ":15,\"timeToNextStationOpp\":15,\"currentStatus\":4, \"time\":" +
-                    "\"10/1/2021 10:00:23 AM\"}," +
-                    "{\"stationCode\":\"NS01\",\"stationName\":\"Jurong East\",\"timeToNextStation\"" +
-                    ":0,\"timeToNextStationOpp\":10,\"currentStatus\":6," +
-                    "\"time\":\"2/1/2021 11:53:02 PM\"}]";
             try
             {
-                JSONArray jsonArray = new JSONArray(data);
+                URL url = new URL("http://10.0.2.2:63414/api/News");
+                HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
+                urlConnection.setRequestMethod("GET");
+                urlConnection.setConnectTimeout(1000);
+                BufferedReader bufferedReader = new BufferedReader(new InputStreamReader
+                        (urlConnection.getInputStream()));
+                String inputLine;
+                StringBuffer content = new StringBuffer();
+                while ((inputLine = bufferedReader.readLine()) != null)
+                {
+                    content.append(inputLine);
+                }
+                bufferedReader.close();
+                urlConnection.disconnect();
+
+                JSONArray jsonArray = new JSONArray(content.toString());
                 for (int i = 0; i < jsonArray.length(); i++)
                 {
                     JSONObject jsonObject = jsonArray.getJSONObject(i);
@@ -101,6 +115,10 @@ public class NewsActivity extends BaseActivity
                                 timeToNextStation, timeToNextStationOpp, currentStatus));
                     });
                 }
+            }
+            catch (IOException e)
+            {
+                e.printStackTrace();
             }
             catch (JSONException e)
             {
