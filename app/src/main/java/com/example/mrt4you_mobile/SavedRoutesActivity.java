@@ -167,7 +167,7 @@ public class SavedRoutesActivity extends BaseActivity
             arrayAdapter.clear();
             arrayAdapter.addAll(savedRoutesForDisplay);
             //arrayAdapter.notifyDataSetChanged();
-            mRoutesList.setOnItemSelectedListener(this);
+            //mRoutesList.setOnItemSelectedListener(this);
         } else {
             TextView noRoutesMsg = findViewById(R.id.noRoutesMsg);
             noRoutesMsg.setVisibility(View.VISIBLE);
