@@ -19,4 +19,5 @@
     <string name="line_label">line label</string>
     <string name="change_icon">change icon</string>
     <string name="image_for_line">image for line</string>
+    <string name="no_routes_msg">You have yet to save any route!</string>
 </resources>

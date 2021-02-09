@@ -1,5 +1,6 @@
 package com.example.mrt4you_mobile;
 
+import android.content.Context;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
@@ -32,10 +33,16 @@ import java.util.Map;
 
 
 public class RouteFragment extends Fragment {
-
     private boolean isRouteSaved;
+    private iRouteFragment iRouteFragment;
     public RouteFragment() {
         // Required empty public constructor
+    }
+
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        iRouteFragment = (iRouteFragment) context;
     }
 
     @Override
@@ -105,6 +112,7 @@ public class RouteFragment extends Fragment {
                     }
 
                     isRouteSaved = !isRouteSaved;
+                    iRouteFragment.bookmarkClicked();
                 });
 
                 RouteDisplayAdapter adapter = new RouteDisplayAdapter(getActivity(), 0);
@@ -203,4 +211,7 @@ public class RouteFragment extends Fragment {
         }
     }
 
+    public interface iRouteFragment {
+        void bookmarkClicked();
+    }
 }
