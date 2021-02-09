@@ -39,8 +39,7 @@
         app:layout_constraintTop_toBottomOf="@+id/titleadd"
         app:layout_constraintStart_toEndOf="@+id/linetxt"
         app:layout_constraintEnd_toEndOf="parent"
-        android:layout_marginRight="90dp"
-        android:entries="@array/lines"/>
+        android:layout_marginRight="90dp"/>
 
     <TextView
         android:id="@+id/stationtxt"
@@ -61,8 +60,7 @@
         app:layout_constraintTop_toBottomOf="@+id/linetxt"
         app:layout_constraintStart_toEndOf="@+id/stationtxt"
         app:layout_constraintEnd_toEndOf="parent"
-        android:layout_marginRight="70dp"
-        android:entries="@array/redline"/>
+        android:layout_marginRight="70dp"/>
 
     <TextView
         android:id="@+id/nametxt"
