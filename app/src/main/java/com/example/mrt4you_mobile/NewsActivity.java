@@ -6,6 +6,7 @@ import androidx.core.app.NotificationCompatSideChannelService;
 import android.app.Activity;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.ScrollView;
 import android.widget.TextView;
 
 import org.json.JSONArray;
@@ -21,6 +22,8 @@ import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.ProtocolException;
 import java.net.URL;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -34,17 +37,22 @@ public class NewsActivity extends BaseActivity
     private static final String CCLINEOPPSTATION = "HarbourFront";
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(Bundle savedInstanceState)
+    {
         super.onCreate(savedInstanceState);
-        try {
+        try
+        {
             updateView();
-        } catch (JSONException e) {
+        }
+        catch (JSONException e)
+        {
             e.printStackTrace();
         }
     }
 
     @Override
-    int getContentViewId() {
+    int getContentViewId()
+    {
         return R.layout.activity_news;
     }
 
@@ -95,11 +103,14 @@ public class NewsActivity extends BaseActivity
                 {
                     JSONObject jsonObject = jsonArray.getJSONObject(i);
 
-                    String time = jsonObject.get("time").toString();
+                    String timeString = jsonObject.get("time").toString();
+                    DateTimeFormatter dfParse = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.SSSSSSS");
+                    LocalDateTime time = LocalDateTime.parse(timeString, dfParse);
+                    DateTimeFormatter df = DateTimeFormatter.ofPattern("d MMM yyyy h:mm:ss a");
                     int finalI = i;
                     runOnUiThread(() ->
                     {
-                        timeList.get(finalI).setText(time);
+                        timeList.get(finalI).setText(time.format(df));
                     });
 
                     String stationCode = jsonObject.get("stationCode").toString();
@@ -119,10 +130,32 @@ public class NewsActivity extends BaseActivity
             catch (IOException e)
             {
                 e.printStackTrace();
+                TextView textConnectionFailed = findViewById(R.id.textConnectionFailed);
+                ScrollView scrollViewNews = findViewById(R.id.scrollViewNews);
+                runOnUiThread(() -> {
+                    textConnectionFailed.setVisibility(View.VISIBLE);
+                    scrollViewNews.setVisibility(View.GONE);
+                });
             }
             catch (JSONException e)
             {
                 e.printStackTrace();
+                TextView textConnectionFailed = findViewById(R.id.textConnectionFailed);
+                ScrollView scrollViewNews = findViewById(R.id.scrollViewNews);
+                runOnUiThread(() -> {
+                    textConnectionFailed.setVisibility(View.VISIBLE);
+                    scrollViewNews.setVisibility(View.GONE);
+                });
+            }
+            catch (Exception e)
+            {
+                e.printStackTrace();
+                TextView textConnectionFailed = findViewById(R.id.textConnectionFailed);
+                ScrollView scrollViewNews = findViewById(R.id.scrollViewNews);
+                runOnUiThread(() -> {
+                    textConnectionFailed.setVisibility(View.VISIBLE);
+                    scrollViewNews.setVisibility(View.GONE);
+                });
             }
         }).start();
     }
@@ -133,7 +166,7 @@ public class NewsActivity extends BaseActivity
     {
         String output = "";
         final String OPERATIONALSUFFIX = "is now fully operational.";
-        final String BREAKDOWNBOTHSUFFIX = "is broken down in both directions";
+        final String BREAKDOWNBOTHSUFFIX = "is broken down in both directions.";
         final String DELAYEDBOTHSUFFIX = "is delayed in both directions. Travel time to the next" +
                 " stations in the direction of";
         final String BREAKDOWNONEWAYSUFFIX = "is broken down in the direction of";
@@ -144,31 +177,31 @@ public class NewsActivity extends BaseActivity
         final String CCPREFIX = "cc";
 
         if (currentStatus == 0)
-            output = String.format("%s %s %s", stationCode, stationName, OPERATIONALSUFFIX);
+            output = String.format("[%s] %s %s", stationCode, stationName, OPERATIONALSUFFIX);
         else
         {
             switch (currentStatus)
             {
                 case 1:
-                    output = String.format("%s %s %s", stationCode, stationName,
+                    output = String.format("[%s] %s %s", stationCode, stationName,
                             BREAKDOWNBOTHSUFFIX);
                     break;
                 case 2:
                     if (stationCode.toLowerCase().startsWith(NSPREFIX))
                     {
-                        output = String.format("%s %s %s %s. %s %s is %s.", stationCode,
+                        output = String.format("[%s] %s %s %s. %s %s is %s minute(s).", stationCode,
                                 stationName, BREAKDOWNONEWAYSUFFIX, NSLINEFWDSTATION, ONEWAYSUFFIX,
                                 NSLINEOPPSTATION, timeToNextStationOpp);
                     }
                     else if (stationCode.toLowerCase().startsWith(EWPREFIX))
                     {
-                        output = String.format("%s %s %s %s. %s %s is %s.", stationCode,
+                        output = String.format("[%s] %s %s %s. %s %s is %s minutes(s).", stationCode,
                                 stationName, BREAKDOWNONEWAYSUFFIX, EWLINEFWDSTATION, ONEWAYSUFFIX,
                                 EWLINEOPPSTATION, timeToNextStationOpp);
                     }
                     else if (stationCode.toLowerCase().startsWith(CCPREFIX))
                     {
-                        output = String.format("%s %s %s %s. %s %s is %s.", stationCode,
+                        output = String.format("[%s] %s %s %s. %s %s is %s minutes(s).", stationCode,
                                 stationName, BREAKDOWNONEWAYSUFFIX, CCLINEFWDSTATION, ONEWAYSUFFIX,
                                 CCLINEOPPSTATION, timeToNextStationOpp);
                     }
@@ -176,19 +209,19 @@ public class NewsActivity extends BaseActivity
                 case 3:
                     if (stationCode.toLowerCase().startsWith(NSPREFIX))
                     {
-                        output = String.format("%s %s %s %s. %s %s is %s.", stationCode,
+                        output = String.format("[%s] %s %s %s. %s %s is %s minutes(s).", stationCode,
                                 stationName, BREAKDOWNONEWAYSUFFIX, NSLINEOPPSTATION, ONEWAYSUFFIX,
                                 NSLINEFWDSTATION, timeToNextStation);
                     }
                     else if (stationCode.toLowerCase().startsWith(EWPREFIX))
                     {
-                        output = String.format("%s %s %s %s. %s %s is %s.", stationCode,
+                        output = String.format("[%s] %s %s %s. %s %s is %s minutes(s).", stationCode,
                                 stationName, BREAKDOWNONEWAYSUFFIX, EWLINEOPPSTATION, ONEWAYSUFFIX,
                                 EWLINEFWDSTATION, timeToNextStation);
                     }
                     else if (stationCode.toLowerCase().startsWith(CCPREFIX))
                     {
-                        output = String.format("%s %s %s %s. %s %s is %s.", stationCode,
+                        output = String.format("[%s] %s %s %s. %s %s is %s minutes(s).", stationCode,
                                 stationName, BREAKDOWNONEWAYSUFFIX, CCLINEOPPSTATION, ONEWAYSUFFIX,
                                 CCLINEFWDSTATION, timeToNextStation);
                     }
@@ -196,19 +229,19 @@ public class NewsActivity extends BaseActivity
                 case 4:
                     if (stationCode.toLowerCase().startsWith(NSPREFIX))
                     {
-                        output = String.format("%s %s %s %s and %s are %s and %s, respectively.",
+                        output = String.format("[%s] %s %s %s and %s are now %s and %s minute(s), respectively.",
                                 stationCode, stationName, DELAYEDBOTHSUFFIX, NSLINEFWDSTATION,
                                 NSLINEOPPSTATION, timeToNextStation, timeToNextStationOpp);
                     }
                     else if (stationCode.toLowerCase().startsWith(EWPREFIX))
                     {
-;                       output = String.format("%s %s %s %s and %s are %s and %s, respectively.",
+;                       output = String.format("[%s] %s %s %s and %s are now %s and %s minute(s), respectively.",
                                 stationCode, stationName, DELAYEDBOTHSUFFIX, EWLINEFWDSTATION,
                                 EWLINEOPPSTATION, timeToNextStation, timeToNextStationOpp);
                     }
                     else if (stationCode.toLowerCase().startsWith(CCPREFIX))
                     {
-                        output = String.format("%s %s %s %s and %s are %s and %s, respectively.",
+                        output = String.format("[%s] %s %s %s and %s are now %s and %s minute(s), respectively.",
                                 stationCode, stationName, DELAYEDBOTHSUFFIX, CCLINEFWDSTATION,
                                 CCLINEOPPSTATION, timeToNextStation, timeToNextStationOpp);
                     }
@@ -216,19 +249,19 @@ public class NewsActivity extends BaseActivity
                 case 5:
                     if (stationCode.toLowerCase().startsWith(NSPREFIX))
                     {
-                       output = String.format("%s %s %s %s. %s %s is now %s.", stationCode,
+                       output = String.format("[%s] %s %s %s. %s %s is now %s minute(s).", stationCode,
                                stationName, DELAYEDONEWAYSUFFIX, NSLINEFWDSTATION, ONEWAYSUFFIX,
                                NSLINEFWDSTATION, timeToNextStation);
                     }
                     else if (stationCode.toLowerCase().startsWith(EWPREFIX))
                     {
-                        output = String.format("%s %s %s %s. %s %s is now %s.", stationCode,
+                        output = String.format("[%s] %s %s %s. %s %s is now %s minute(s).", stationCode,
                                 stationName, DELAYEDONEWAYSUFFIX, EWLINEFWDSTATION, ONEWAYSUFFIX,
                                 EWLINEFWDSTATION, timeToNextStation);
                     }
                     else if (stationCode.toLowerCase().startsWith(CCPREFIX))
                     {
-                        output = String.format("%s %s %s %s. %s %s is now %s.", stationCode,
+                        output = String.format("[%s] %s %s %s. %s %s is now %s minute(s).", stationCode,
                                 stationName, DELAYEDONEWAYSUFFIX, CCLINEFWDSTATION, ONEWAYSUFFIX,
                                 CCLINEFWDSTATION, timeToNextStation);
                     }
@@ -236,19 +269,19 @@ public class NewsActivity extends BaseActivity
                 case 6:
                     if (stationCode.toLowerCase().startsWith(NSPREFIX))
                     {
-                        output = String.format("%s %s %s %s. %s %s is now %s.", stationCode,
+                        output = String.format("[%s] %s %s %s. %s %s is now %s minute(s).", stationCode,
                                 stationName, DELAYEDONEWAYSUFFIX, NSLINEOPPSTATION, ONEWAYSUFFIX,
                                 NSLINEOPPSTATION, timeToNextStationOpp);
                     }
                     else if (stationCode.toLowerCase().startsWith(EWPREFIX))
                     {
-                        output = String.format("%s %s %s %s. %s %s is now %s.", stationCode,
+                        output = String.format("[%s] %s %s %s. %s %s is now %s minute(s).", stationCode,
                                 stationName, DELAYEDONEWAYSUFFIX, EWLINEOPPSTATION, ONEWAYSUFFIX,
                                 EWLINEOPPSTATION, timeToNextStationOpp);
                     }
                     else if (stationCode.toLowerCase().startsWith(CCPREFIX))
                     {
-                        output = String.format("%s %s %s %s. %s %s is now %s.", stationCode,
+                        output = String.format("[%s] %s %s %s. %s %s is now %s minute(s).", stationCode,
                                 stationName, DELAYEDONEWAYSUFFIX, CCLINEOPPSTATION, ONEWAYSUFFIX,
                                 CCLINEOPPSTATION, timeToNextStationOpp);
                     }

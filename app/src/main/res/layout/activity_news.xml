@@ -18,7 +18,20 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.041" />
 
+    <TextView
+        android:id="@+id/textConnectionFailed"
+        android:textSize="24sp"
+        android:text="@string/no_connection"
+        android:visibility="gone"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"/>
+
     <ScrollView
+        android:id="@+id/scrollViewNews"
         app:layout_constraintTop_toTopOf="parent"
         android:layout_marginTop="90dp"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -37,10 +50,9 @@
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="10dp"
                 android:layout_marginRight="10dp"
-                android:layout_gravity="right"
-                android:textSize="24dp"
-                android:textStyle="italic"
-                android:text="21 Nov 2020, 9:45 am" />
+                android:layout_gravity="end"
+                android:textSize="24sp"
+                android:textStyle="italic"/>
             <TextView
                 android:id="@+id/textNews1"
                 android:layout_width="wrap_content"
@@ -48,9 +60,8 @@
                 android:layout_marginTop="10dp"
                 android:layout_marginLeft="10dp"
                 android:layout_marginRight="10dp"
-                android:textSize="24dp"
-                android:lineSpacingExtra="10dp"
-                android:text="[ NSL ]: UPDATE: All train services on NSL have resumed." />
+                android:textSize="24sp"
+                android:lineSpacingExtra="10dp" />
 
 
             <TextView
@@ -60,10 +71,9 @@
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="10dp"
                 android:layout_marginRight="10dp"
-                android:layout_gravity="right"
-                android:textSize="24dp"
-                android:textStyle="italic"
-                android:text="21 Nov 2020, 8:18 am" />
+                android:layout_gravity="end"
+                android:textSize="24sp"
+                android:textStyle="italic" />
             <TextView
                 android:id="@+id/textNews2"
                 android:layout_width="wrap_content"
@@ -71,9 +81,8 @@
                 android:layout_marginTop="10dp"
                 android:layout_marginLeft="10dp"
                 android:layout_marginRight="10dp"
-                android:textSize="24dp"
-                android:lineSpacingExtra="10dp"
-                android:text="[ NSL ]: UPDATE: Fault cleared, train svcs are progressively being restored. Please expect additional 10mins train travel time between Kranji and Jurong East." />
+                android:textSize="24sp"
+                android:lineSpacingExtra="10dp" />
 
             <TextView
                 android:id="@+id/textTime3"
@@ -82,10 +91,9 @@
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="10dp"
                 android:layout_marginRight="10dp"
-                android:layout_gravity="right"
-                android:textSize="24dp"
-                android:textStyle="italic"
-                android:text="21 Nov 2020, 7:32 am" />
+                android:layout_gravity="end"
+                android:textSize="24sp"
+                android:textStyle="italic" />
             <TextView
                 android:id="@+id/textNews3"
                 android:layout_width="wrap_content"
@@ -93,9 +101,8 @@
                 android:layout_marginTop="10dp"
                 android:layout_marginLeft="10dp"
                 android:layout_marginRight="10dp"
-                android:textSize="24dp"
-                android:lineSpacingExtra="10dp"
-                android:text="[ NSL ]: Due to a train fault, please expect additional 25 mins train travel time between Woodlands and Jurong East." />
+                android:textSize="24sp"
+                android:lineSpacingExtra="10dp" />
 
         </LinearLayout>
     </ScrollView>
