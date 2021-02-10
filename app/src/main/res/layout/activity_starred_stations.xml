@@ -32,15 +32,6 @@
         android:layout_marginTop="10dp" />
 
     <ImageView
-        android:id="@+id/searchicon"
-        app:layout_constraintTop_toTopOf="@id/searchtxt"
-        app:layout_constraintBottom_toBottomOf="@id/searchtxt"
-        app:layout_constraintEnd_toEndOf="@id/searchtxt"
-        android:layout_width="20sp"
-        android:layout_height="20sp"
-        app:srcCompat="@drawable/searchicon" />
-
-    <ImageView
         android:id="@+id/addbtn"
         android:layout_width="20sp"
         android:layout_height="20sp"
