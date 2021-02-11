@@ -24,6 +24,8 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 
 public class SearchRouteActivity extends BaseActivity implements RouteFragment.iRouteFragment{
+    AutoCompleteTextView mStartingStation;
+    AutoCompleteTextView mDestination;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -31,8 +33,9 @@ public class SearchRouteActivity extends BaseActivity implements RouteFragment.i
         replaceRouteFragment(null);
 
         //retrieve list of stations to populate auto-suggestions for search bars
-        AutoCompleteTextView startingStation = findViewById(R.id.starting_station);
-        AutoCompleteTextView destination = findViewById(R.id.destination);
+        mStartingStation = findViewById(R.id.starting_station);
+        mDestination = findViewById(R.id.destination);
+
         InputStream input = getResources().openRawResource(R.raw.stations);
         String content;
         try {
@@ -41,8 +44,8 @@ public class SearchRouteActivity extends BaseActivity implements RouteFragment.i
                 String[] stations = content.split(";");
                 ArrayAdapter<String> adapter = new ArrayAdapter<>(this,
                         R.layout.support_simple_spinner_dropdown_item, stations);
-                startingStation.setAdapter(adapter);
-                destination.setAdapter(adapter);
+                mStartingStation.setAdapter(adapter);
+                mDestination.setAdapter(adapter);
             }
         } catch (IOException e) {
             e.printStackTrace();
@@ -52,15 +55,20 @@ public class SearchRouteActivity extends BaseActivity implements RouteFragment.i
         //replace fragment with result
         ImageButton searchBtn = findViewById(R.id.searchBtn);
         searchBtn.setOnClickListener(v -> {
+            // to hide keyboard and remove focus on the search boxes
             hideSoftKeyboard(this);
 
-            String startingStationName = startingStation.getText().toString().trim();
-            String destinationName = destination.getText().toString().trim();
+            String startingStationName = mStartingStation.getText().toString().trim();
+            String destinationName = mDestination.getText().toString().trim();
 
             if (startingStationName.isEmpty() || destinationName.isEmpty())
             {
                 Toast.makeText(this, "Please input starting station and " +
                         "destination", Toast.LENGTH_SHORT).show();
+            }
+            else if (startingStationName.equalsIgnoreCase(destinationName)) {
+                Toast.makeText(this, "Starting station and " +
+                        "destination cannot be the same!", Toast.LENGTH_SHORT).show();
             }
             else
             {
@@ -155,6 +163,28 @@ public class SearchRouteActivity extends BaseActivity implements RouteFragment.i
 
     @Override
     public void bookmarkClicked() {}
+
+    @Override
+    public void replaceSearchBarsDataUponBackStackPop(Route route) {
+        String startingStationName = mStartingStation.getText().toString().trim();
+        String destinationName = mDestination.getText().toString().trim();
+        // if text in search bars are not the same
+        // as the starting station and destination in the fragment,
+        // replace text in search bars accordingly
+        if (!startingStationName.equalsIgnoreCase(route.getStart()) ||
+            !destinationName.equalsIgnoreCase(route.getEnd())) {
+            runOnUiThread(() -> {
+                mStartingStation.setText("");
+                mStartingStation.append(route.getStart());
+                mDestination.setText("");
+                mDestination.append(route.getEnd());
+                //mStartingStation.setText(route.getStart(), false);
+                //mDestination.setText(route.getEnd(), false);
+            });
+
+        }
+
+    }
 
 /*    @Override
     public void onBackPressed()
