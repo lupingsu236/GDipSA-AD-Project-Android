@@ -23,13 +23,17 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
-public class StarredStationsActivity extends BaseActivity{
+public class StarredStationsActivity extends BaseActivity {
 
     public List<starinfo> starStation;
+    List<starinfo> searchres=new ArrayList<>();
     ArrayAdapter<starinfo> starAdapter;
     ListView listView;
+    TextView searchtxt;
+    ImageView searchicon;
     View addbtn;
 
     @SuppressLint("ResourceType")
@@ -37,19 +41,20 @@ public class StarredStationsActivity extends BaseActivity{
     protected void onCreate(Bundle savedInstanceState) {
 
         super.onCreate(savedInstanceState);
+
         starStation = new ArrayList<>();
-        starStation.add(new starinfo("Home1", "NS3: Yew Tee", "redline"));
-        starStation.add(new starinfo("School", "CC24: Kent Ridge", "circleine"));
-        starStation.add(new starinfo("Aunt Betty's1", "NS1: Jurong East", "redline"));
-        starStation.add(new starinfo("Home2", "NS3: Yew Tee", "redline"));
-        starStation.add(new starinfo("School", "CC24: Kent Ridge", "circleine"));
-        starStation.add(new starinfo("Aunt Betty's2", "NS1: Jurong East", "redline"));
-        starStation.add(new starinfo("Home3", "NS3: Yew Tee", "redline"));
-        starStation.add(new starinfo("School", "CC24: Kent Ridge", "circleine"));
-        starStation.add(new starinfo("Aunt Betty's3", "NS1: Jurong East", "redline"));
-        starStation.add(new starinfo("Home4", "NS3: Yew Tee", "redline"));
-        starStation.add(new starinfo("School", "CC24: Kent Ridge", "circleine"));
-        starStation.add(new starinfo("Aunt Betty's4", "NS1: Jurong East", "redline"));
+        starStation.add(new starinfo("Home1", "NS3: Yew Tee", "North-South Line"));
+        starStation.add(new starinfo("School", "CC24: Kent Ridge", "Circle Line"));
+        starStation.add(new starinfo("Aunt Betty's1", "NS1: Jurong East", "North-South Line"));
+        starStation.add(new starinfo("Home2", "NS3: Yew Tee", "North-South Line"));
+        starStation.add(new starinfo("School", "CC24: Kent Ridge", "Circle Line"));
+        starStation.add(new starinfo("Aunt Betty's1", "NS1: Jurong East", "North-South Line"));
+        starStation.add(new starinfo("Home3", "NS3: Yew Tee", "North-South Line"));
+        starStation.add(new starinfo("School", "CC24: Kent Ridge", "Circle Line"));
+        starStation.add(new starinfo("Aunt Betty's1", "NS1: Jurong East", "North-South Line"));
+        starStation.add(new starinfo("Home4", "NS3: Yew Tee", "North-South Line"));
+        starStation.add(new starinfo("School", "CC24: Kent Ridge", "Circle Line"));
+        starStation.add(new starinfo("Aunt Betty's1", "NS1: Jurong East", "North-South Line"));
 
         starAdapter = new starAdapter(StarredStationsActivity.this, R.layout.custom_star, starStation);
         listView = findViewById(R.id.addlist);
@@ -61,11 +66,11 @@ public class StarredStationsActivity extends BaseActivity{
         addbtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                searchres.clear();
                 Intent intent = new Intent(StarredStationsActivity.this, AddStarredStationActivity.class);
-                startActivityForResult(intent,1);
+                startActivityForResult(intent, 1);
             }
         });
-
 
         String addname = getIntent().getStringExtra("starname");
         String stationname = getIntent().getStringExtra("stationname");
@@ -73,10 +78,34 @@ public class StarredStationsActivity extends BaseActivity{
 
         if (addname != null) {
             starinfo s = new starinfo(addname, stationname, linename);
-            starStation.add(s);
+            starAdapter.add(s);
+            starAdapter = new starAdapter(StarredStationsActivity.this, R.layout.custom_star, starStation);
             starAdapter.notifyDataSetChanged();
+            listView.setAdapter(starAdapter);
             listView.smoothScrollToPosition(0);
         }
+
+        searchtxt=findViewById(R.id.searchtxt);
+        searchicon=findViewById(R.id.searchicon);
+        searchicon.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                for(int i=0;i<starStation.size();i++){
+                    if(starStation.get(i).getName().toLowerCase().contains(searchtxt.getText().toString().toLowerCase())){
+                        searchres.add(starStation.get(i));
+                    }
+                }
+                if(searchres.size()==0 || searchtxt.getText().toString()==null){
+                    Toast.makeText(StarredStationsActivity.this,"No suitable result!",Toast.LENGTH_LONG).show();
+                }else {
+                    starAdapter = new starAdapter(StarredStationsActivity.this, R.layout.custom_star, searchres);
+                    starAdapter.notifyDataSetChanged();
+                    listView.setAdapter(starAdapter);
+                    listView.smoothScrollToPosition(0);
+                }
+            }
+        });
+
     }
 
 
