@@ -104,6 +104,46 @@
                 android:textSize="24sp"
                 android:lineSpacingExtra="10dp" />
 
+            <TextView
+                android:id="@+id/textTime4"
+                android:layout_marginTop="30dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="10dp"
+                android:layout_gravity="end"
+                android:textSize="24sp"
+                android:textStyle="italic" />
+            <TextView
+                android:id="@+id/textNews4"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="10dp"
+                android:textSize="24sp"
+                android:lineSpacingExtra="10dp" />
+
+            <TextView
+                android:id="@+id/textTime5"
+                android:layout_marginTop="30dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="10dp"
+                android:layout_gravity="end"
+                android:textSize="24sp"
+                android:textStyle="italic" />
+            <TextView
+                android:id="@+id/textNews5"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="10dp"
+                android:textSize="24sp"
+                android:lineSpacingExtra="10dp" />
+
         </LinearLayout>
     </ScrollView>
 

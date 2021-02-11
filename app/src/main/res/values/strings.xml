@@ -21,4 +21,5 @@
     <string name="image_for_line">image for line</string>
     <string name="no_routes_msg">You have yet to save any route!</string>
     <string name="no_connection">Connection has failed</string>
+    <string name="no_news">There is currently no news.</string>
 </resources>
