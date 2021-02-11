@@ -2,7 +2,7 @@ Jurong East
 Bukit Batok
 Bukit Gombak
 Choa Chu Kang
-Yew Tee
+Yew Tee 
 Kranji
 Marsiling
 Woodlands
@@ -32,7 +32,7 @@ Tanah Merah
 Bedok
 Kembangan
 Eunos
-Paya Lebar
+Paya Lebar 
 Aljunied
 Kallang
 Lavender
@@ -62,6 +62,7 @@ Nicoll Highway
 Stadium
 Mountbatten
 Dakota
+Paya Lebar
 MacPherson
 Tai Seng
 Bartley

@@ -48,12 +48,6 @@ public class RouteFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // to restore user input corresponding to previous fragment returned to layout from back stack
-        Bundle bundle = getArguments();
-        if (bundle!=null) {
-            Route route = (Route) bundle.getSerializable("route");
-            iRouteFragment.replaceSearchBarsDataUponBackStackPop(route);
-        }
         // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_route, container, false);
     }
@@ -219,6 +213,5 @@ public class RouteFragment extends Fragment {
 
     public interface iRouteFragment {
         void bookmarkClicked();
-        void replaceSearchBarsDataUponBackStackPop(Route route);
     }
 }
