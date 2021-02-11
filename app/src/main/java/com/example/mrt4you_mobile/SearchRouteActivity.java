@@ -66,6 +66,10 @@ public class SearchRouteActivity extends BaseActivity implements RouteFragment.i
                 Toast.makeText(this, "Please input starting station and " +
                         "destination", Toast.LENGTH_SHORT).show();
             }
+            else if (startingStationName.equalsIgnoreCase(destinationName)) {
+                Toast.makeText(this, "Starting station and " +
+                        "destination cannot be the same!", Toast.LENGTH_SHORT).show();
+            }
             else
             {
                 new Thread(() ->
