@@ -2,6 +2,7 @@ package com.example.mrt4you_mobile;
 
 import androidx.annotation.Nullable;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -9,7 +10,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-public class Node 
+public class Node implements Serializable
 {
 	private static final int INFINITY = 2000000000;
     private String name;

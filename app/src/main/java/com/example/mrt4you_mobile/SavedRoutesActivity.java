@@ -81,15 +81,7 @@ public class SavedRoutesActivity extends BaseActivity
 
     }
 
-    @Override
-    int getContentViewId() {
-        return R.layout.activity_saved_routes;
-    }
 
-    @Override
-    int getNavigationMenuItemId() {
-        return R.id.action_saved;
-    }
 
     @Override
     public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
@@ -148,9 +140,9 @@ public class SavedRoutesActivity extends BaseActivity
         FragmentManager fm = getSupportFragmentManager();
         FragmentTransaction trans = fm.beginTransaction();
         trans.replace(R.id.fragment_route_container, fragment);
-        if(selected_route!=null) {
+        /*if(selected_route!=null) {
             trans.addToBackStack(null);
-        }
+        }*/
         trans.commit();
     }
 
@@ -167,7 +159,6 @@ public class SavedRoutesActivity extends BaseActivity
             arrayAdapter.clear();
             arrayAdapter.addAll(savedRoutesForDisplay);
             //arrayAdapter.notifyDataSetChanged();
-            //mRoutesList.setOnItemSelectedListener(this);
         } else {
             TextView noRoutesMsg = findViewById(R.id.noRoutesMsg);
             noRoutesMsg.setVisibility(View.VISIBLE);
@@ -175,5 +166,18 @@ public class SavedRoutesActivity extends BaseActivity
             FrameLayout fragmentContainer = findViewById(R.id.fragment_route_container);
             fragmentContainer.setVisibility(View.GONE);
         }
+    }
+
+    @Override
+    public void replaceSearchBarsDataUponBackStackPop(Route route) {}
+
+    @Override
+    int getContentViewId() {
+        return R.layout.activity_saved_routes;
+    }
+
+    @Override
+    int getNavigationMenuItemId() {
+        return R.id.action_saved;
     }
 }
