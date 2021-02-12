@@ -44,8 +44,8 @@ public abstract class BaseActivity extends AppCompatActivity
                 Intent intent = new Intent(this, MapActivity.class);
                 intent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
                 startActivity(intent);
-            } else if (itemId == R.id.action_starred) {
-                Intent intent = new Intent(this, StarredStationsActivity.class);
+            } else if (itemId == R.id.action_status) {
+                Intent intent = new Intent(this, LineStatusActivity.class);
                 intent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
                 startActivity(intent);
             } else if (itemId == R.id.action_search) {

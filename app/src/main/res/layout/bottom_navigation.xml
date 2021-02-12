@@ -9,4 +9,7 @@
     app:menu="@menu/bottom_menu"
     app:itemIconTint="@drawable/bottomnav_color"
     app:itemTextColor="@drawable/bottomnav_color"
-    app:labelVisibilityMode="labeled"/>
+    app:labelVisibilityMode="labeled"
+    app:itemIconSize="30dp"
+    app:itemTextAppearanceActive="@style/BottomNavigationView.Active"
+    app:itemTextAppearanceInactive="@style/BottomNavigationView"/>

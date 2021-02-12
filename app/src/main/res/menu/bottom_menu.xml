@@ -8,10 +8,16 @@
         android:title="@string/map"
         app:showAsAction="ifRoom" />
     <item
-        android:id="@+id/action_starred"
+        android:id="@+id/action_news"
         android:enabled="true"
-        android:icon="@drawable/ic_action_star"
-        android:title="@string/starred"
+        android:icon="@drawable/ic_action_news"
+        android:title="@string/updates"
+        app:showAsAction="ifRoom" />
+    <item
+        android:id="@+id/action_status"
+        android:enabled="true"
+        android:icon="@drawable/ic_action_mrtlogo"
+        android:title="@string/status"
         app:showAsAction="ifRoom" />
     <item
         android:id="@+id/action_search"
@@ -25,10 +31,5 @@
         android:icon="@drawable/ic_action_saved"
         android:title="@string/saved"
         app:showAsAction="ifRoom" />
-    <item
-        android:id="@+id/action_news"
-        android:enabled="true"
-        android:icon="@drawable/ic_action_news"
-        android:title="@string/news"
-        app:showAsAction="ifRoom" />
+
 </menu>
