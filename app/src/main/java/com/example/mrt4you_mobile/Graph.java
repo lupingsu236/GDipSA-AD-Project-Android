@@ -90,15 +90,15 @@ public class Graph
 		Node orchard = new Node("Orchard");
 		orchard.setStationCode(new ArrayList<>(Arrays.asList("NS22")));
 		Node somerset = new Node("Somerset");
-		somerset.setStationCode(new ArrayList<>(Arrays.asList("NS23", "CC1")));
+		somerset.setStationCode(new ArrayList<>(Arrays.asList("NS23")));
 		Node dhobyGhaut = new Node("Dhoby Ghaut");
-		dhobyGhaut.setStationCode(new ArrayList<>(Arrays.asList("NS24")));
+		dhobyGhaut.setStationCode(new ArrayList<>(Arrays.asList("NS24", "CC1")));
 		Node cityHall = new Node("City Hall");
 		cityHall.setStationCode(new ArrayList<>(Arrays.asList("NS25", "EW13")));
 		Node rafflesPlace = new Node("Raffles Place");
 		rafflesPlace.setStationCode(new ArrayList<>(Arrays.asList("NS26", "EW14")));
 		Node marinaBay = new Node("Marina Bay");
-		marinaBay.setStationCode(new ArrayList<>(Arrays.asList("NS27", "CE2")));
+		marinaBay.setStationCode(new ArrayList<>(Arrays.asList("NS27")));
 		Node marinaSouthPier = new Node("Marina South Pier");
 		marinaSouthPier.setStationCode(new ArrayList<>(Arrays.asList("NS28")));
 		
@@ -385,8 +385,6 @@ public class Graph
 		telokBlangah.setStationCode(new ArrayList<>(Arrays.asList("CC28")));
 		Node harbourfront = new Node("HarbourFront");
 		harbourfront.setStationCode(new ArrayList<>(Arrays.asList("CC29")));
-		Node bayfront = new Node("Bayfront");
-		bayfront.setStationCode(new ArrayList<>(Arrays.asList("CE1")));
 		
 		dhobyGhaut.addDestination(brasBasah, 2);
 		brasBasah.addDestination(dhobyGhaut, 2);
@@ -470,8 +468,7 @@ public class Graph
 		harbourfront.addDestination(telokBlangah, 2);
 		
 		Graph graph = new Graph();
-		
-		graph.addNode(bayfront);
+
 		graph.addNode(harbourfront);
 		graph.addNode(telokBlangah);
 		graph.addNode(labradorPark);

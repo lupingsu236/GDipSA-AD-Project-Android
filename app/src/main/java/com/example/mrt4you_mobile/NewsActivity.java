@@ -1,9 +1,5 @@
 package com.example.mrt4you_mobile;
 
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.app.NotificationCompatSideChannelService;
-
-import android.app.Activity;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.ScrollView;
@@ -12,15 +8,11 @@ import android.widget.TextView;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.w3c.dom.Text;
 
 import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
-import java.net.ProtocolException;
 import java.net.URL;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -40,14 +32,7 @@ public class NewsActivity extends BaseActivity
     protected void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
-        try
-        {
-            updateView();
-        }
-        catch (JSONException e)
-        {
-            e.printStackTrace();
-        }
+        updateView();
     }
 
     @Override
@@ -61,8 +46,7 @@ public class NewsActivity extends BaseActivity
         return R.id.action_news;
     }
 
-    public void updateView() throws JSONException
-    {
+    public void updateView() {
         new Thread(() ->
         {
             List<TextView> newsList = new ArrayList<>();
@@ -80,6 +64,14 @@ public class NewsActivity extends BaseActivity
             newsList.add(textNews3);
             TextView textTime3 = findViewById(R.id.textTime3);
             timeList.add(textTime3);
+            TextView textNews4 = findViewById(R.id.textNews4);
+            newsList.add(textNews4);
+            TextView textTime4 = findViewById(R.id.textTime4);
+            timeList.add(textTime4);
+            TextView textNews5 = findViewById(R.id.textNews5);
+            newsList.add(textNews5);
+            TextView textTime5 = findViewById(R.id.textTime5);
+            timeList.add(textTime5);
 
             try
             {
@@ -90,7 +82,7 @@ public class NewsActivity extends BaseActivity
                 BufferedReader bufferedReader = new BufferedReader(new InputStreamReader
                         (urlConnection.getInputStream()));
                 String inputLine;
-                StringBuffer content = new StringBuffer();
+                StringBuilder content = new StringBuilder();
                 while ((inputLine = bufferedReader.readLine()) != null)
                 {
                     content.append(inputLine);
@@ -98,56 +90,44 @@ public class NewsActivity extends BaseActivity
                 bufferedReader.close();
                 urlConnection.disconnect();
 
-                JSONArray jsonArray = new JSONArray(content.toString());
-                for (int i = 0; i < jsonArray.length(); i++)
+                if (content.toString().length() <= 2)
                 {
-                    JSONObject jsonObject = jsonArray.getJSONObject(i);
+                    runOnUiThread(() -> {
+                        LocalDateTime now = LocalDateTime.now();
+                        DateTimeFormatter df = DateTimeFormatter.ofPattern("d MMM yyyy h:mm:ss a");
+                        textTime1.setText(now.format(df));
 
-                    String timeString = jsonObject.get("time").toString();
-                    DateTimeFormatter dfParse = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.SSSSSSS");
-                    LocalDateTime time = LocalDateTime.parse(timeString, dfParse);
-                    DateTimeFormatter df = DateTimeFormatter.ofPattern("d MMM yyyy h:mm:ss a");
-                    int finalI = i;
-                    runOnUiThread(() ->
-                    {
-                        timeList.get(finalI).setText(time.format(df));
-                    });
-
-                    String stationCode = jsonObject.get("stationCode").toString();
-                    String stationName = jsonObject.get("stationName").toString();
-                    int timeToNextStation = Integer.parseInt(jsonObject.get("timeToNextStation")
-                            .toString());
-                    int timeToNextStationOpp = Integer.parseInt(jsonObject
-                            .get("timeToNextStationOpp").toString());
-                    int currentStatus = Integer.parseInt(jsonObject.get("currentStatus").toString());
-                    runOnUiThread(() ->
-                    {
-                        newsList.get(finalI).setText(generateNewsMsg(stationCode, stationName,
-                                timeToNextStation, timeToNextStationOpp, currentStatus));
+                        textNews1.setText(R.string.no_news);
                     });
                 }
+                else
+                {
+                    JSONArray jsonArray = new JSONArray(content.toString());
+                    for (int i = 0; i < jsonArray.length(); i++)
+                    {
+                        JSONObject jsonObject = jsonArray.getJSONObject(i);
+
+                        String timeString = jsonObject.get("time").toString();
+                        DateTimeFormatter dfParse = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.SSSSSSS");
+                        LocalDateTime time = LocalDateTime.parse(timeString, dfParse);
+                        DateTimeFormatter df = DateTimeFormatter.ofPattern("d MMM yyyy h:mm:ss a");
+                        int finalI = i;
+                        runOnUiThread(() -> timeList.get(finalI).setText(time.format(df)));
+
+                        String stationCode = jsonObject.get("stationCode").toString().trim();
+                        String stationName = jsonObject.get("stationName").toString().trim();
+                        int timeToNextStation = Integer.parseInt(jsonObject.get("timeToNextStation")
+                                .toString());
+                        int timeToNextStationOpp = Integer.parseInt(jsonObject
+                                .get("timeToNextStationOpp").toString());
+                        int currentStatus = Integer.parseInt(jsonObject.get("currentStatus").toString());
+                        runOnUiThread(() ->
+                                newsList.get(finalI).setText(generateNewsMsg(stationCode, stationName,
+                                        timeToNextStation, timeToNextStationOpp, currentStatus)));
+                    }
+                }
             }
-            catch (IOException e)
-            {
-                e.printStackTrace();
-                TextView textConnectionFailed = findViewById(R.id.textConnectionFailed);
-                ScrollView scrollViewNews = findViewById(R.id.scrollViewNews);
-                runOnUiThread(() -> {
-                    textConnectionFailed.setVisibility(View.VISIBLE);
-                    scrollViewNews.setVisibility(View.GONE);
-                });
-            }
-            catch (JSONException e)
-            {
-                e.printStackTrace();
-                TextView textConnectionFailed = findViewById(R.id.textConnectionFailed);
-                ScrollView scrollViewNews = findViewById(R.id.scrollViewNews);
-                runOnUiThread(() -> {
-                    textConnectionFailed.setVisibility(View.VISIBLE);
-                    scrollViewNews.setVisibility(View.GONE);
-                });
-            }
-            catch (Exception e)
+            catch (IOException | JSONException e)
             {
                 e.printStackTrace();
                 TextView textConnectionFailed = findViewById(R.id.textConnectionFailed);
@@ -235,7 +215,7 @@ public class NewsActivity extends BaseActivity
                     }
                     else if (stationCode.toLowerCase().startsWith(EWPREFIX))
                     {
-;                       output = String.format("[%s] %s %s %s and %s are now %s and %s minute(s), respectively.",
+                       output = String.format("[%s] %s %s %s and %s are now %s and %s minute(s), respectively.",
                                 stationCode, stationName, DELAYEDBOTHSUFFIX, EWLINEFWDSTATION,
                                 EWLINEOPPSTATION, timeToNextStation, timeToNextStationOpp);
                     }
@@ -288,7 +268,6 @@ public class NewsActivity extends BaseActivity
                     break;
             }
         }
-
         return output;
     }
 }

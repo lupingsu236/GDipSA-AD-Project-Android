@@ -41,17 +41,26 @@ public abstract class BaseActivity extends AppCompatActivity
         navigationView.postDelayed(() -> {
             int itemId = item.getItemId();
             if (itemId == R.id.action_map) {
-                startActivity(new Intent(this, MapActivity.class));
-            } else if (itemId == R.id.action_starred) {
-                startActivity(new Intent(this, StarredStationsActivity.class));
+                Intent intent = new Intent(this, MapActivity.class);
+                intent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
+                startActivity(intent);
+            } else if (itemId == R.id.action_status) {
+                Intent intent = new Intent(this, LineStatusActivity.class);
+                intent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
+                startActivity(intent);
             } else if (itemId == R.id.action_search) {
-                startActivity(new Intent(this, SearchRouteActivity.class));
+                Intent intent = new Intent(this, SearchRouteActivity.class);
+                intent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
+                startActivity(intent);
             } else if (itemId == R.id.action_saved) {
-                startActivity(new Intent(this, SavedRoutesActivity.class));
+                Intent intent = new Intent(this, SavedRoutesActivity.class);
+                intent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
+                startActivity(intent);
             } else if (itemId == R.id.action_news) {
-                startActivity(new Intent(this, NewsActivity.class));
+                Intent intent = new Intent(this, NewsActivity.class);
+                intent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
+                startActivity(intent);
             }
-            finish();
         }, 300);
         return true;
     }

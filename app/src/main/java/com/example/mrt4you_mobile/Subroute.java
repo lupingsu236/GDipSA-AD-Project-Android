@@ -1,9 +1,10 @@
 package com.example.mrt4you_mobile;
 
+import java.io.Serializable;
 import java.util.LinkedList;
 import java.util.List;
 
-public class Subroute {
+public class Subroute implements Serializable {
     private String line;
     private int noOfStations;
     private int noOfMins;

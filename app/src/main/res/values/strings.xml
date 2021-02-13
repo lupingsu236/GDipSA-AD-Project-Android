@@ -1,16 +1,14 @@
 <resources>
     <string name="app_name">MRT4You</string>
-    <string name="add_starred_station">Add Starred Station</string>
+    <string name="view_rail_status">Rail Status</string>
     <string name="view_system_map">MRT/LRT System Map</string>
     <string name="view_news">News | Announcements</string>
     <string name="saved_routes">Saved Routes</string>
     <string name="search_route">Search Route</string>
-    <string name="starred_stations">Starred Stations</string>
-    <string name="starred">starred</string>
-    <string name="map">map</string>
-    <string name="search">search</string>
-    <string name="saved">saved</string>
-    <string name="news">news</string>
+    <string name="map">Map</string>
+    <string name="search">Search</string>
+    <string name="saved">Saved</string>
+    <string name="updates">Updates</string>
     <string name="icon_for_bookmarking">icon for bookmarking</string>
     <string name="mrt_map">mrt map</string>
     <string name="zoom_button_for_map">zoom button for map</string>
@@ -21,4 +19,6 @@
     <string name="image_for_line">image for line</string>
     <string name="no_routes_msg">You have yet to save any route!</string>
     <string name="no_connection">Connection has failed</string>
+    <string name="no_news">There is currently no news.</string>
+    <string name="status">Status</string>
 </resources>
