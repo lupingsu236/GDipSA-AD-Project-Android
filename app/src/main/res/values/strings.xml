@@ -21,4 +21,6 @@
     <string name="no_connection">Connection has failed</string>
     <string name="no_news">There is currently no news.</string>
     <string name="status">Status</string>
+    <string name="mrt_logo">mrt logo</string>
+    <string name="line_status">line status</string>
 </resources>
