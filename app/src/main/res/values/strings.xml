@@ -23,4 +23,5 @@
     <string name="status">Status</string>
     <string name="mrt_logo">mrt logo</string>
     <string name="line_status">line status</string>
+    <string name="refresh">refresh</string>
 </resources>

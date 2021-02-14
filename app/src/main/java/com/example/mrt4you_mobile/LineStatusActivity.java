@@ -4,6 +4,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.Bundle;
 import android.view.View;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.ScrollView;
 import android.widget.TextView;
@@ -32,6 +33,8 @@ public class LineStatusActivity extends BaseActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         updateLineStatus();
+        ImageButton refreshBtn = findViewById(R.id.refreshBtn);
+        refreshBtn.setOnClickListener(v-> updateLineStatus());
     }
 
     private void updateLineStatus() {
@@ -48,7 +51,7 @@ public class LineStatusActivity extends BaseActivity {
 
             try
             {
-                URL url = new URL(AZURENONOPERATIONALSTATIONSURL);
+                URL url = new URL(LOCALNONOPERATIONALSTATIONSURL);
                 HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
                 urlConnection.setRequestMethod("GET");
                 urlConnection.setConnectTimeout(1000);
@@ -97,26 +100,39 @@ public class LineStatusActivity extends BaseActivity {
 
                     runOnUiThread(() -> {
                         //update status display for each respective line
-                        if(!line_status.get("ns").equalsIgnoreCase("normal")) {
-                           if(line_status.get("ns").equalsIgnoreCase("breakdown")) {
-                               ns_status_display.setImageResource(R.drawable.breakdown);
-                           } else {
-                               ns_status_display.setImageResource(R.drawable.delayed);
-                           }
-                        }
-                        if(!line_status.get("ew").equalsIgnoreCase("normal")) {
-                            if(line_status.get("ew").equalsIgnoreCase("breakdown")) {
+                        switch(line_status.get("ns")){
+                            case "normal":
+                                ns_status_display.setImageResource(R.drawable.normal);
+                                break;
+                            case "breakdown":
                                 ns_status_display.setImageResource(R.drawable.breakdown);
-                            } else {
+                                break;
+                            case "delayed":
                                 ns_status_display.setImageResource(R.drawable.delayed);
-                            }
+                                break;
                         }
-                        if(!line_status.get("cc").equalsIgnoreCase("normal")) {
-                            if(line_status.get("cc").equalsIgnoreCase("breakdown")) {
-                                ns_status_display.setImageResource(R.drawable.breakdown);
-                            } else {
-                                ns_status_display.setImageResource(R.drawable.delayed);
-                            }
+
+                        switch(line_status.get("ew")){
+                            case "normal":
+                                ew_status_display.setImageResource(R.drawable.normal);
+                                break;
+                            case "breakdown":
+                                ew_status_display.setImageResource(R.drawable.breakdown);
+                                break;
+                            case "delayed":
+                                ew_status_display.setImageResource(R.drawable.delayed);
+                                break;
+                        }
+                        switch(line_status.get("cc")){
+                            case "normal":
+                                cc_status_display.setImageResource(R.drawable.normal);
+                                break;
+                            case "breakdown":
+                                cc_status_display.setImageResource(R.drawable.breakdown);
+                                break;
+                            case "delayed":
+                                cc_status_display.setImageResource(R.drawable.delayed);
+                                break;
                         }
                     });
 
@@ -126,9 +142,9 @@ public class LineStatusActivity extends BaseActivity {
             {
                 e.printStackTrace();
                 runOnUiThread(() -> {
-                    ns_status_display.setImageResource(R.drawable.internet_required);
-                    ew_status_display.setImageResource(R.drawable.internet_required);
-                    cc_status_display.setImageResource(R.drawable.internet_required);
+                    ns_status_display.setImageResource(R.drawable.connection_failed);
+                    ew_status_display.setImageResource(R.drawable.connection_failed);
+                    cc_status_display.setImageResource(R.drawable.connection_failed);
                 });
             }
         }).start();
