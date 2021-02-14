@@ -28,6 +28,9 @@ public class NewsActivity extends BaseActivity
     private static final String CCLINEFWDSTATION = "Dhoby Ghaut";
     private static final String CCLINEOPPSTATION = "HarbourFront";
 
+    private static final String AZURENEWSAPIURL = "https://mrt4youweb.azurewebsites.net/api/news";
+    private static final String LOCALNEWSAPIURL = "http://10.0.2.2:63414/api/News";
+
     @Override
     protected void onCreate(Bundle savedInstanceState)
     {
@@ -75,7 +78,7 @@ public class NewsActivity extends BaseActivity
 
             try
             {
-                URL url = new URL("http://10.0.2.2:63414/api/News");
+                URL url = new URL(AZURENEWSAPIURL);
                 HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
                 urlConnection.setRequestMethod("GET");
                 urlConnection.setConnectTimeout(1000);

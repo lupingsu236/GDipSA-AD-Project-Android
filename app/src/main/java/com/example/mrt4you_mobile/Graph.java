@@ -23,22 +23,22 @@ import java.util.stream.Collectors;
 public class Graph 
 {
     private Set<Node> nodes = new HashSet<>();
-    
     public void addNode(Node nodeA) 
     {
         nodes.add(nodeA);
     }
-
 	public Set<Node> getNodes() 
 	{
 		return nodes;
 	}
-
 	public void setNodes(Set<Node> nodes) 
 	{
 		this.nodes = nodes;
 	}
-	
+
+	private static String AZURENONOPERATIONALSTATIONSURL = "https://mrt4youweb.azurewebsites.net/api/nonoperationalstations";
+    private static String LOCALNONOPERATIONALSTATIONSURL = "http://10.0.2.2:63414/api/NonOperationalStations";
+
 	public Node findNode(String nodeName)
 	{
 		Optional<Node> node = nodes.stream().filter(x -> x.getName().equalsIgnoreCase(nodeName)).findFirst();
@@ -558,14 +558,14 @@ public class Graph
 	
 	public void updateGraphFromWebAPI() throws JSONException, IOException
 	{
-		URL url = new URL("http://10.0.2.2:63414/api/NonOperationalStations");
+		URL url = new URL(AZURENONOPERATIONALSTATIONSURL);
 		HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
 		urlConnection.setRequestMethod("GET");
 		urlConnection.setConnectTimeout(1000);
 		BufferedReader bufferedReader = new BufferedReader(new InputStreamReader
 				(urlConnection.getInputStream()));
 		String inputLine;
-		StringBuffer content = new StringBuffer();
+		StringBuilder content = new StringBuilder();
 		while ((inputLine = bufferedReader.readLine()) != null)
 		{
 			content.append(inputLine);
