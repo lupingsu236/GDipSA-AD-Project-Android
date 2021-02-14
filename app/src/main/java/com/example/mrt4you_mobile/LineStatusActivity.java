@@ -51,7 +51,7 @@ public class LineStatusActivity extends BaseActivity {
 
             try
             {
-                URL url = new URL(LOCALNONOPERATIONALSTATIONSURL);
+                URL url = new URL(AZURENONOPERATIONALSTATIONSURL);
                 HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
                 urlConnection.setRequestMethod("GET");
                 urlConnection.setConnectTimeout(1000);
