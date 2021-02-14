@@ -1,5 +1,6 @@
 package com.example.mrt4you_mobile;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
@@ -13,6 +14,10 @@ import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.Toast;
+
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.messaging.FirebaseMessaging;
 
 import org.json.JSONException;
 
@@ -50,6 +55,14 @@ public class SearchRouteActivity extends BaseActivity implements RouteFragment.i
         } catch (IOException e) {
             e.printStackTrace();
         }
+
+        FirebaseMessaging.getInstance().subscribeToTopic("notification")
+                .addOnCompleteListener(new OnCompleteListener<Void>() {
+                    @Override
+                    public void onComplete(@NonNull Task<Void> task) {
+                    }
+                });
+
 
         //set onclicklistener to search button to call shortest path algorithm and
         //replace fragment with result
