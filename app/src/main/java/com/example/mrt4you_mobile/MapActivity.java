@@ -1,5 +1,6 @@
 package com.example.mrt4you_mobile;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
@@ -12,6 +13,10 @@ import android.webkit.WebChromeClient;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.ProgressBar;
+
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.messaging.FirebaseMessaging;
 
 public class MapActivity extends BaseActivity {
     private WebView mWebView;
@@ -33,6 +38,7 @@ public class MapActivity extends BaseActivity {
             i.setData(Uri.parse(url));
             startActivity(i);
         });
+
 
         mProgressBar = findViewById(R.id.progressBar);
         mWebView.setWebChromeClient(new WebChromeClient() {

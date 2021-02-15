@@ -5,6 +5,12 @@ import android.view.View;
 import android.widget.ScrollView;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
+
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.messaging.FirebaseMessaging;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -36,6 +42,7 @@ public class NewsActivity extends BaseActivity
     {
         super.onCreate(savedInstanceState);
         updateView();
+
     }
 
     @Override
