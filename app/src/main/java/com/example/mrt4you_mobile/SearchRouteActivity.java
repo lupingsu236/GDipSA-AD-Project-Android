@@ -56,14 +56,6 @@ public class SearchRouteActivity extends BaseActivity implements RouteFragment.i
             e.printStackTrace();
         }
 
-        FirebaseMessaging.getInstance().subscribeToTopic("notification")
-                .addOnCompleteListener(new OnCompleteListener<Void>() {
-                    @Override
-                    public void onComplete(@NonNull Task<Void> task) {
-                    }
-                });
-
-
         //set onclicklistener to search button to call shortest path algorithm and
         //replace fragment with result
         ImageButton searchBtn = findViewById(R.id.searchBtn);
