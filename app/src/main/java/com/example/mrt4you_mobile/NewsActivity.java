@@ -1,15 +1,12 @@
 package com.example.mrt4you_mobile;
 
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
 import android.view.View;
-import android.widget.ScrollView;
+import android.widget.ImageButton;
+import android.widget.ListView;
 import android.widget.TextView;
-
-import androidx.annotation.NonNull;
-
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
-import com.google.firebase.messaging.FirebaseMessaging;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -24,6 +21,8 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 public class NewsActivity extends BaseActivity
 {
@@ -34,6 +33,10 @@ public class NewsActivity extends BaseActivity
     private static final String CCLINEFWDSTATION = "Dhoby Ghaut";
     private static final String CCLINEOPPSTATION = "HarbourFront";
 
+    protected static final String NSPREFIX = "ns";
+    protected static final String EWPREFIX = "ew";
+    protected static final String CCPREFIX = "cc";
+
     private static final String AZURENEWSAPIURL = "https://mrt4youweb.azurewebsites.net/api/news";
     private static final String LOCALNEWSAPIURL = "http://10.0.2.2:63414/api/News";
 
@@ -42,7 +45,8 @@ public class NewsActivity extends BaseActivity
     {
         super.onCreate(savedInstanceState);
         updateView();
-
+        ImageButton refreshBtn = findViewById(R.id.refreshBtn);
+        refreshBtn.setOnClickListener(v-> updateView());
     }
 
     @Override
@@ -56,33 +60,18 @@ public class NewsActivity extends BaseActivity
         return R.id.action_news;
     }
 
-    public void updateView() {
-        new Thread(() ->
+    public void updateView()
+    {
+        ExecutorService executor = Executors.newSingleThreadExecutor();
+        Handler handler = new Handler(Looper.getMainLooper());
+
+        executor.execute(() ->
         {
-            List<TextView> newsList = new ArrayList<>();
-            List<TextView> timeList = new ArrayList<>();
 
-            TextView textNews1 = findViewById(R.id.textNews1);
-            newsList.add(textNews1);
-            TextView textTime1 = findViewById(R.id.textTime1);
-            timeList.add(textTime1);
-            TextView textNews2 = findViewById(R.id.textNews2);
-            newsList.add(textNews2);
-            TextView textTime2 = findViewById(R.id.textTime2);
-            timeList.add(textTime2);
-            TextView textNews3 = findViewById(R.id.textNews3);
-            newsList.add(textNews3);
-            TextView textTime3 = findViewById(R.id.textTime3);
-            timeList.add(textTime3);
-            TextView textNews4 = findViewById(R.id.textNews4);
-            newsList.add(textNews4);
-            TextView textTime4 = findViewById(R.id.textTime4);
-            timeList.add(textTime4);
-            TextView textNews5 = findViewById(R.id.textNews5);
-            newsList.add(textNews5);
-            TextView textTime5 = findViewById(R.id.textTime5);
-            timeList.add(textTime5);
+            List<News> newsList = new ArrayList<>();
+            DateTimeFormatter df = DateTimeFormatter.ofPattern("d MMM yyyy h:mm:ss a");
 
+            //Background work here
             try
             {
                 URL url = new URL(AZURENEWSAPIURL);
@@ -102,13 +91,11 @@ public class NewsActivity extends BaseActivity
 
                 if (content.toString().length() <= 2)
                 {
-                    runOnUiThread(() -> {
-                        LocalDateTime now = LocalDateTime.now();
-                        DateTimeFormatter df = DateTimeFormatter.ofPattern("d MMM yyyy h:mm:ss a");
-                        textTime1.setText(now.format(df));
+                    News news = new News();
+                    news.setTime(LocalDateTime.now().format(df));
+                    news.setMsg(getString(R.string.no_news));
 
-                        textNews1.setText(R.string.no_news);
-                    });
+                    newsList.add(news);
                 }
                 else
                 {
@@ -120,9 +107,6 @@ public class NewsActivity extends BaseActivity
                         String timeString = jsonObject.get("time").toString();
                         DateTimeFormatter dfParse = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.SSSSSSS");
                         LocalDateTime time = LocalDateTime.parse(timeString, dfParse);
-                        DateTimeFormatter df = DateTimeFormatter.ofPattern("d MMM yyyy h:mm:ss a");
-                        int finalI = i;
-                        runOnUiThread(() -> timeList.get(finalI).setText(time.format(df)));
 
                         String stationCode = jsonObject.get("stationCode").toString().trim();
                         String stationName = jsonObject.get("stationName").toString().trim();
@@ -131,9 +115,13 @@ public class NewsActivity extends BaseActivity
                         int timeToNextStationOpp = Integer.parseInt(jsonObject
                                 .get("timeToNextStationOpp").toString());
                         int currentStatus = Integer.parseInt(jsonObject.get("currentStatus").toString());
-                        runOnUiThread(() ->
-                                newsList.get(finalI).setText(generateNewsMsg(stationCode, stationName,
-                                        timeToNextStation, timeToNextStationOpp, currentStatus)));
+
+                        News news = new News();
+                        news.setTime(time.format(df));
+                        news.setMsg(generateNewsMsg(stationCode, stationName, timeToNextStation, timeToNextStationOpp, currentStatus));
+                        news.setImageBasedOnStationCode(stationCode);
+
+                        newsList.add(news);
                     }
                 }
             }
@@ -141,13 +129,30 @@ public class NewsActivity extends BaseActivity
             {
                 e.printStackTrace();
                 TextView textConnectionFailed = findViewById(R.id.textConnectionFailed);
-                ScrollView scrollViewNews = findViewById(R.id.scrollViewNews);
+                ListView listView = findViewById(R.id.listView);
                 runOnUiThread(() -> {
                     textConnectionFailed.setVisibility(View.VISIBLE);
-                    scrollViewNews.setVisibility(View.GONE);
+                    listView.setVisibility(View.GONE);
                 });
             }
-        }).start();
+
+            News[] newsArr = new News[newsList.size()];
+            newsList.toArray(newsArr);
+
+            handler.post(() ->
+            {
+                //UI Thread work here
+                NewsDisplayAdapter newsDisplayAdapter = new NewsDisplayAdapter(this, 0);
+                newsDisplayAdapter.setData(newsArr);
+
+                ListView listView = findViewById(R.id.listView);
+                if (listView != null)
+                {
+                    listView.setAdapter(newsDisplayAdapter);
+                }
+
+            });
+        });
     }
 
     public static String generateNewsMsg (String stationCode, String stationName,
@@ -162,9 +167,6 @@ public class NewsActivity extends BaseActivity
         final String BREAKDOWNONEWAYSUFFIX = "is broken down in the direction of";
         final String DELAYEDONEWAYSUFFIX = "is delayed in the direction of";
         final String ONEWAYSUFFIX = "Travel time to the next station towards";
-        final String NSPREFIX = "ns";
-        final String EWPREFIX = "ew";
-        final String CCPREFIX = "cc";
 
         if (currentStatus == 0)
             output = String.format("[%s] %s %s", stationCode, stationName, OPERATIONALSUFFIX);
@@ -185,13 +187,13 @@ public class NewsActivity extends BaseActivity
                     }
                     else if (stationCode.toLowerCase().startsWith(EWPREFIX))
                     {
-                        output = String.format("[%s] %s %s %s. %s %s is %s minutes(s).", stationCode,
+                        output = String.format("[%s] %s %s %s. %s %s is %s minute(s).", stationCode,
                                 stationName, BREAKDOWNONEWAYSUFFIX, EWLINEFWDSTATION, ONEWAYSUFFIX,
                                 EWLINEOPPSTATION, timeToNextStationOpp);
                     }
                     else if (stationCode.toLowerCase().startsWith(CCPREFIX))
                     {
-                        output = String.format("[%s] %s %s %s. %s %s is %s minutes(s).", stationCode,
+                        output = String.format("[%s] %s %s %s. %s %s is %s minute(s).", stationCode,
                                 stationName, BREAKDOWNONEWAYSUFFIX, CCLINEFWDSTATION, ONEWAYSUFFIX,
                                 CCLINEOPPSTATION, timeToNextStationOpp);
                     }
@@ -199,19 +201,19 @@ public class NewsActivity extends BaseActivity
                 case 3:
                     if (stationCode.toLowerCase().startsWith(NSPREFIX))
                     {
-                        output = String.format("[%s] %s %s %s. %s %s is %s minutes(s).", stationCode,
+                        output = String.format("[%s] %s %s %s. %s %s is %s minute(s).", stationCode,
                                 stationName, BREAKDOWNONEWAYSUFFIX, NSLINEOPPSTATION, ONEWAYSUFFIX,
                                 NSLINEFWDSTATION, timeToNextStation);
                     }
                     else if (stationCode.toLowerCase().startsWith(EWPREFIX))
                     {
-                        output = String.format("[%s] %s %s %s. %s %s is %s minutes(s).", stationCode,
+                        output = String.format("[%s] %s %s %s. %s %s is %s minute(s).", stationCode,
                                 stationName, BREAKDOWNONEWAYSUFFIX, EWLINEOPPSTATION, ONEWAYSUFFIX,
                                 EWLINEFWDSTATION, timeToNextStation);
                     }
                     else if (stationCode.toLowerCase().startsWith(CCPREFIX))
                     {
-                        output = String.format("[%s] %s %s %s. %s %s is %s minutes(s).", stationCode,
+                        output = String.format("[%s] %s %s %s. %s %s is %s minute(s).", stationCode,
                                 stationName, BREAKDOWNONEWAYSUFFIX, CCLINEOPPSTATION, ONEWAYSUFFIX,
                                 CCLINEFWDSTATION, timeToNextStation);
                     }
@@ -225,7 +227,7 @@ public class NewsActivity extends BaseActivity
                     }
                     else if (stationCode.toLowerCase().startsWith(EWPREFIX))
                     {
-                       output = String.format("[%s] %s %s %s and %s are now %s and %s minute(s), respectively.",
+                        output = String.format("[%s] %s %s %s and %s are now %s and %s minute(s), respectively.",
                                 stationCode, stationName, DELAYEDBOTHSUFFIX, EWLINEFWDSTATION,
                                 EWLINEOPPSTATION, timeToNextStation, timeToNextStationOpp);
                     }
@@ -239,9 +241,9 @@ public class NewsActivity extends BaseActivity
                 case 5:
                     if (stationCode.toLowerCase().startsWith(NSPREFIX))
                     {
-                       output = String.format("[%s] %s %s %s. %s %s is now %s minute(s).", stationCode,
-                               stationName, DELAYEDONEWAYSUFFIX, NSLINEFWDSTATION, ONEWAYSUFFIX,
-                               NSLINEFWDSTATION, timeToNextStation);
+                        output = String.format("[%s] %s %s %s. %s %s is now %s minute(s).", stationCode,
+                                stationName, DELAYEDONEWAYSUFFIX, NSLINEFWDSTATION, ONEWAYSUFFIX,
+                                NSLINEFWDSTATION, timeToNextStation);
                     }
                     else if (stationCode.toLowerCase().startsWith(EWPREFIX))
                     {
@@ -280,4 +282,48 @@ public class NewsActivity extends BaseActivity
         }
         return output;
     }
+
+    static class News
+    {
+        private String time, msg;
+        private int image;
+
+        public void setImageBasedOnStationCode(String stationCode)
+        {
+            String line = stationCode.substring(0, 2).toLowerCase();
+            switch (line)
+            {
+                case NSPREFIX:
+                    image = R.drawable.ns_label;
+                    break;
+                case EWPREFIX:
+                    image = R.drawable.ew_label;
+                    break;
+                case CCPREFIX:
+                    image = R.drawable.cc_label;
+                    break;
+            }
+        }
+
+        public String getTime() {
+            return time;
+        }
+
+        public void setTime(String time) {
+            this.time = time;
+        }
+
+        public String getMsg() {
+            return msg;
+        }
+
+        public void setMsg(String msg) {
+            this.msg = msg;
+        }
+
+        public int getImage() {
+            return image;
+        }
+    }
+
 }

@@ -2,7 +2,7 @@
     <string name="app_name">MRT4You</string>
     <string name="view_rail_status">Rail Status</string>
     <string name="view_system_map">MRT/LRT System Map</string>
-    <string name="view_news">News | Announcements</string>
+    <string name="view_news">Updates</string>
     <string name="saved_routes">Saved Routes</string>
     <string name="search_route">Search Route</string>
     <string name="map">Map</string>

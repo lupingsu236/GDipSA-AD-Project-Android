@@ -1,10 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    tools:context=".NewsActivity">
+    android:layout_height="match_parent">
+
+    <ImageButton
+        android:id="@+id/refreshBtn"
+        android:layout_width="42dp"
+        android:layout_height="42dp"
+        android:layout_marginEnd="28dp"
+        android:contentDescription="@string/refresh"
+        android:scaleType="centerCrop"
+        android:src="@drawable/refresh_icon"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintVertical_bias="0.041"/>
 
     <TextView
         android:layout_width="wrap_content"
@@ -30,124 +42,14 @@
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"/>
 
-    <ScrollView
-        android:id="@+id/scrollViewNews"
+    <ListView
+        android:id="@+id/listView"
         app:layout_constraintTop_toTopOf="parent"
         android:layout_marginTop="90dp"
         app:layout_constraintBottom_toBottomOf="parent"
-        android:layout_marginBottom="100dp"
+        android:layout_marginBottom="57dp"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical" >
-
-            <TextView
-                android:id="@+id/textTime1"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="10dp"
-                android:layout_marginRight="10dp"
-                android:layout_gravity="end"
-                android:textSize="24sp"
-                android:textStyle="italic"/>
-            <TextView
-                android:id="@+id/textNews1"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="10dp"
-                android:layout_marginLeft="10dp"
-                android:layout_marginRight="10dp"
-                android:textSize="24sp"
-                android:lineSpacingExtra="10dp" />
-
-
-            <TextView
-                android:id="@+id/textTime2"
-                android:layout_marginTop="30dp"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="10dp"
-                android:layout_marginRight="10dp"
-                android:layout_gravity="end"
-                android:textSize="24sp"
-                android:textStyle="italic" />
-            <TextView
-                android:id="@+id/textNews2"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="10dp"
-                android:layout_marginLeft="10dp"
-                android:layout_marginRight="10dp"
-                android:textSize="24sp"
-                android:lineSpacingExtra="10dp" />
-
-            <TextView
-                android:id="@+id/textTime3"
-                android:layout_marginTop="30dp"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="10dp"
-                android:layout_marginRight="10dp"
-                android:layout_gravity="end"
-                android:textSize="24sp"
-                android:textStyle="italic" />
-            <TextView
-                android:id="@+id/textNews3"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="10dp"
-                android:layout_marginLeft="10dp"
-                android:layout_marginRight="10dp"
-                android:textSize="24sp"
-                android:lineSpacingExtra="10dp" />
-
-            <TextView
-                android:id="@+id/textTime4"
-                android:layout_marginTop="30dp"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="10dp"
-                android:layout_marginRight="10dp"
-                android:layout_gravity="end"
-                android:textSize="24sp"
-                android:textStyle="italic" />
-            <TextView
-                android:id="@+id/textNews4"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="10dp"
-                android:layout_marginLeft="10dp"
-                android:layout_marginRight="10dp"
-                android:textSize="24sp"
-                android:lineSpacingExtra="10dp" />
-
-            <TextView
-                android:id="@+id/textTime5"
-                android:layout_marginTop="30dp"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="10dp"
-                android:layout_marginRight="10dp"
-                android:layout_gravity="end"
-                android:textSize="24sp"
-                android:textStyle="italic" />
-            <TextView
-                android:id="@+id/textNews5"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="10dp"
-                android:layout_marginLeft="10dp"
-                android:layout_marginRight="10dp"
-                android:textSize="24sp"
-                android:lineSpacingExtra="10dp" />
-
-        </LinearLayout>
-    </ScrollView>
-
-
+        android:layout_height="match_parent" />
 
     <include
         layout="@layout/bottom_navigation"

@@ -56,7 +56,7 @@ public class NotificationService extends FirebaseMessagingService {
                 .setWhen(System.currentTimeMillis())
                 .setContentTitle(title)
                 .setContentText(body)
-                .setSmallIcon(R.drawable.mrt_logo)
+                .setSmallIcon(R.mipmap.ic_launcher)
                 .setContentInfo("Info");
         notificationManager.notify(new Random().nextInt(), notificationBuilder.build());
     }
@@ -81,7 +81,7 @@ public class NotificationService extends FirebaseMessagingService {
                 .setWhen(System.currentTimeMillis())
                 .setContentTitle(title)
                 .setContentText(body)
-                .setSmallIcon(R.drawable.mrt_logo)
+                .setSmallIcon(R.mipmap.ic_launcher)
                 .setContentInfo("Info");
         notificationManager.notify(new Random().nextInt(), notificationBuilder.build());
     }
