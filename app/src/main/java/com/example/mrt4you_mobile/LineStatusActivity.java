@@ -27,8 +27,6 @@ import java.util.Map;
 import java.util.Objects;
 
 public class LineStatusActivity extends BaseActivity {
-    private static String AZURENONOPERATIONALSTATIONSURL = "https://mrt4youweb.azurewebsites.net/api/nonoperationalstations";
-    private static String LOCALNONOPERATIONALSTATIONSURL = "http://10.0.2.2:63414/api/NonOperationalStations";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -52,7 +50,7 @@ public class LineStatusActivity extends BaseActivity {
 
             try
             {
-                URL url = new URL(AZURENONOPERATIONALSTATIONSURL);
+                URL url = new URL(NONOPERATIONALSTATIONS_URL);
                 HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
                 urlConnection.setRequestMethod("GET");
                 urlConnection.setConnectTimeout(1000);

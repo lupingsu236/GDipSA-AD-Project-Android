@@ -17,6 +17,8 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import static com.example.mrt4you_mobile.BaseActivity.NONOPERATIONALSTATIONS_URL;
+
 public class Graph 
 {
     private Set<Node> nodes = new HashSet<>();
@@ -33,8 +35,6 @@ public class Graph
 		this.nodes = nodes;
 	}
 
-	private static String AZURENONOPERATIONALSTATIONSURL = "https://mrt4youweb.azurewebsites.net/api/nonoperationalstations";
-    private static String LOCALNONOPERATIONALSTATIONSURL = "http://10.0.2.2:63414/api/NonOperationalStations";
 
 	public Node findNode(String nodeName)
 	{
@@ -555,7 +555,7 @@ public class Graph
 	
 	public void updateGraphFromWebAPI() throws JSONException, IOException
 	{
-		URL url = new URL(AZURENONOPERATIONALSTATIONSURL);
+		URL url = new URL(NONOPERATIONALSTATIONS_URL);
 		HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
 		urlConnection.setRequestMethod("GET");
 		urlConnection.setConnectTimeout(1000);

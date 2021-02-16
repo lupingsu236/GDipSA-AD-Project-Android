@@ -12,6 +12,15 @@ import com.google.android.material.bottomnavigation.BottomNavigationView;
 public abstract class BaseActivity extends AppCompatActivity
         implements BottomNavigationView.OnNavigationItemSelectedListener {
     protected BottomNavigationView navigationView;
+    private static String AZURE_NEWS_API_URL = "https://mrt4youweb.azurewebsites.net/api/news";
+    private static String LOCAL_NEWS_API_URL = "http://10.0.2.2:63414/api/News";
+    private static String AZURE_NONOPERATIONALSTATIONS_URL = "https://mrt4youweb.azurewebsites.net/api/nonoperationalstations";
+    private static String LOCAL_NONOPERATIONALSTATIONS_URL = "http://10.0.2.2:63414/api/NonOperationalStations";
+
+    // edit following two variables to switch between azure cloud and local host api
+    public static final String NONOPERATIONALSTATIONS_URL = AZURE_NONOPERATIONALSTATIONS_URL;
+    public static final String NEWS_URL = AZURE_NEWS_API_URL;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

@@ -37,8 +37,7 @@ public class NewsActivity extends BaseActivity
     protected static final String EWPREFIX = "ew";
     protected static final String CCPREFIX = "cc";
 
-    private static final String AZURENEWSAPIURL = "https://mrt4youweb.azurewebsites.net/api/news";
-    private static final String LOCALNEWSAPIURL = "http://10.0.2.2:63414/api/News";
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -80,7 +79,7 @@ public class NewsActivity extends BaseActivity
             //Background work here
             try
             {
-                URL url = new URL(AZURENEWSAPIURL);
+                URL url = new URL(NEWS_URL);
                 HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
                 urlConnection.setRequestMethod("GET");
                 urlConnection.setConnectTimeout(1000);
