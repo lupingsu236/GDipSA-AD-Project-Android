@@ -62,6 +62,12 @@ public class NewsActivity extends BaseActivity
 
     public void updateView()
     {
+        ListView listView = findViewById(R.id.listView);
+        listView.setVisibility(View.VISIBLE);
+
+        TextView textConnectionFailed = findViewById(R.id.textConnectionFailed);
+        textConnectionFailed.setVisibility(View.GONE);
+
         ExecutorService executor = Executors.newSingleThreadExecutor();
         Handler handler = new Handler(Looper.getMainLooper());
 
@@ -128,8 +134,6 @@ public class NewsActivity extends BaseActivity
             catch (IOException | JSONException e)
             {
                 e.printStackTrace();
-                TextView textConnectionFailed = findViewById(R.id.textConnectionFailed);
-                ListView listView = findViewById(R.id.listView);
                 runOnUiThread(() -> {
                     textConnectionFailed.setVisibility(View.VISIBLE);
                     listView.setVisibility(View.GONE);
@@ -144,13 +148,7 @@ public class NewsActivity extends BaseActivity
                 //UI Thread work here
                 NewsDisplayAdapter newsDisplayAdapter = new NewsDisplayAdapter(this, 0);
                 newsDisplayAdapter.setData(newsArr);
-
-                ListView listView = findViewById(R.id.listView);
-                if (listView != null)
-                {
-                    listView.setAdapter(newsDisplayAdapter);
-                }
-
+                listView.setAdapter(newsDisplayAdapter);
             });
         });
     }
