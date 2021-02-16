@@ -24,4 +24,6 @@
     <string name="mrt_logo">mrt logo</string>
     <string name="line_status">line status</string>
     <string name="refresh">refresh</string>
+    <string name="select_hint">Please select…</string>
+    <string name="change">Change</string>
 </resources>

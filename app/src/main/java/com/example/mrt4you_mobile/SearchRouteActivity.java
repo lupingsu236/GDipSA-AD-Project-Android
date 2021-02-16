@@ -56,11 +56,10 @@ public class SearchRouteActivity extends BaseActivity implements RouteFragment.i
             e.printStackTrace();
         }
 
-        //set onclicklistener to search button to call shortest path algorithm and
-        //replace fragment with result
+        // set onclicklistener to search button to generate shortest path
         ImageButton searchBtn = findViewById(R.id.searchBtn);
         searchBtn.setOnClickListener(v -> {
-            // to hide keyboard and remove focus on the search boxes
+            // to hide keyboard
             hideSoftKeyboard(this);
 
             String startingStationName = mStartingStation.getText().toString().trim();
@@ -94,6 +93,7 @@ public class SearchRouteActivity extends BaseActivity implements RouteFragment.i
                     if (result != null)
                     {
                         runOnUiThread(() -> {
+                            // replace fragment to display shortest path result
                             replaceRouteFragment(result);
                             // the prints below are just to check if data is being passed properly
                             System.out.println(result.getPath());
@@ -167,15 +167,16 @@ public class SearchRouteActivity extends BaseActivity implements RouteFragment.i
     }
 
     @Override
-    public void bookmarkClicked() {}
+    public void refreshDropdownAfterRouteDeleted() {}
 
     @Override
     public void replaceSearchBarsDataUponBackStackPop(Route route) {
+        // method to cater for the case when back button is pressed
+        // if text in search bars are not the same as those in the fragment,
+        // replace text in search bars accordingly
         String startingStationName = mStartingStation.getText().toString().trim();
         String destinationName = mDestination.getText().toString().trim();
-        // if text in search bars are not the same
-        // as the starting station and destination in the fragment,
-        // replace text in search bars accordingly
+
         if (!startingStationName.equalsIgnoreCase(route.getStart()) ||
                 !destinationName.equalsIgnoreCase(route.getEnd())) {
             runOnUiThread(() -> {
@@ -183,23 +184,10 @@ public class SearchRouteActivity extends BaseActivity implements RouteFragment.i
                 mStartingStation.append(route.getStart());
                 mDestination.setText("");
                 mDestination.append(route.getEnd());
-                //mStartingStation.setText(route.getStart(), false);
-                //mDestination.setText(route.getEnd(), false);
             });
 
         }
 
     }
 
-/*    @Override
-    public void onBackPressed()
-    {
-        //if back stack only consist of the first fragment insertion, exit app
-        int backStackCount = getSupportFragmentManager().getBackStackEntryCount();
-        if(backStackCount == 1) {
-            System.exit(1);
-        } else {
-            super.onBackPressed();
-        }
-    }*/
 }

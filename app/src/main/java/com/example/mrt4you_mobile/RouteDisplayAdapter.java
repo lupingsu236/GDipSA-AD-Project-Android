@@ -13,7 +13,7 @@ import androidx.annotation.NonNull;
 import androidx.constraintlayout.widget.ConstraintLayout;
 
 
-public class RouteDisplayAdapter extends ArrayAdapter {
+public class RouteDisplayAdapter extends ArrayAdapter<Subroute> {
     private final Context context;
     private Route route;
 
@@ -29,21 +29,15 @@ public class RouteDisplayAdapter extends ArrayAdapter {
         }
     }
 
-    public Route getRoute() {
-        return route;
-    }
 
     public View getView(int pos, View view, @NonNull ViewGroup parent) {
         if (view == null) {
             LayoutInflater inflater = (LayoutInflater) context.getSystemService(
                     Activity.LAYOUT_INFLATER_SERVICE);
-
-            // if we are not responsible for adding the view to the parent,
-            // then attachToRoot should be 'false' (which is in our case)
             view = inflater.inflate(R.layout.route_list_item, parent, false);
         }
 
-        // set all necessary views
+        // set all necessary images and text for each subroute
         Subroute subroute = route.getSubroutes().get(pos);
         ImageView line_subroute= view.findViewById(R.id.line_subroute);
         int id1 = context.getResources().getIdentifier(subroute.getLine().toLowerCase()+"_subroute",
@@ -65,59 +59,40 @@ public class RouteDisplayAdapter extends ArrayAdapter {
         }
         // find appropriate station code for display
         String start_stationCode = getStationCodeForLine(subroute.getLine(), start);
-        subroute_start.setText(start_stationCode + ": " + start.getName());
+        subroute_start.setText(String.format("%s: %s", start_stationCode, start.getName()));
 
         TextView subroute_direction = view.findViewById(R.id.subroute_direction);
-        subroute_direction.setText("Towards " + subroute.getDirection());
+        subroute_direction.setText(String.format("Towards %s", subroute.getDirection()));
 
         TextView subroute_stops = view.findViewById(R.id.subroute_stops);
-        subroute_stops.setText("> Ride " + subroute.getNoOfStations() + " Stop(s) (" + subroute.getNoOfMins() + " min)");
-       /* final boolean[] expanded = {false};
-        subroute_stops.setOnClickListener(v -> {
-            if (!expanded[0]) {
-                String subroute_path = "\n";
-                for (Node stn : subroute.getStations()) {
-                    subroute_path+=stn.getName()+"\n";
-                }
-                subroute_stops.setText("> Ride " + subroute.getNoOfStations() + " Stop(s) (" +
-                        subroute.getNoOfMins() + " min) \n" + subroute_path);
-                expanded[0] = !expanded[0];
-            } else {
-                subroute_stops.setText("> Ride " + subroute.getNoOfStations() + " Stop(s) (" + subroute.getNoOfMins() + " min)");
-                expanded[0] = !expanded[0];
-            }
-        });*/
-
+        subroute_stops.setText(String.format("> Ride %s Stops(s) (%s min)",
+                subroute.getNoOfStations(), subroute.getNoOfMins()));
 
 
         TextView subroute_destination = view.findViewById(R.id.subroute_destination);
         Node end = subroute.getStations().get(subroute.getStations().size()-1);
         // find appropriate station code for display
         String end_stationCode = getStationCodeForLine(subroute.getLine(), end);
-        subroute_destination.setText(end_stationCode + ": " + end.getName());
+        subroute_destination.setText(String.format("%s: %s", end_stationCode, end.getName()));
 
 
-        //if interchange exists and it's not the final subroute
+        // if interchange exists and it's not the final subroute
+        // display icon and text to indicate a change in line is required
         if(route.getInterchanges().size()>0 && pos!=route.getSubroutes().size()-1) {
             ImageView change_icon = view.findViewById(R.id.change_icon);
             change_icon.setVisibility(View.VISIBLE);
             ConstraintLayout change_info = view.findViewById(R.id.change_info);
             change_info.setVisibility(View.VISIBLE);
-            TextView change = view.findViewById(R.id.change);
-            if (route.getInterchanges().get(pos).getName().equals("City Hall") ||
-                    route.getInterchanges().get(pos).getName().equals("Raffles Place")) {
-                change.setText("Change (est 5 min)");
-            } else {
-                change.setText("Change (est 7 min)");
-            }
-
+            /*TextView change = view.findViewById(R.id.change);
+            change.setText("Change");*/
         }
-
 
         return view;
     }
 
     private String getStationCodeForLine(String line, Node station) {
+        // returns the respective station code for the current line;
+        // required to handle interchanges, which have more than one station code
         if (station.getStationCode().size()==1) {
             return station.getStationCode().get(0);
         } else {
@@ -127,7 +102,6 @@ public class RouteDisplayAdapter extends ArrayAdapter {
                 }
             }
         }
-
         return "";
     }
 }

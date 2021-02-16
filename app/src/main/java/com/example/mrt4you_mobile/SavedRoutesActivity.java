@@ -1,26 +1,17 @@
 package com.example.mrt4you_mobile;
 
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.os.Environment;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.Button;
 import android.widget.FrameLayout;
-import android.widget.ImageButton;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
-
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
-import com.google.firebase.messaging.FirebaseMessaging;
 
 import org.json.JSONException;
 
@@ -37,7 +28,8 @@ public class SavedRoutesActivity extends BaseActivity
         implements AdapterView.OnItemSelectedListener, RouteFragment.iRouteFragment {
     Spinner mRoutesList;
     String[] mSavedRoutes;
-    ArrayAdapter<String> arrayAdapter;
+    ArrayAdapter<String> mArrayAdapter;
+    List<String> mSavedRoutesForDisplay = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -48,14 +40,14 @@ public class SavedRoutesActivity extends BaseActivity
         String content = getSavedRoutes();
         if(content!=null) {
             mSavedRoutes = content.split(";");
-            List<String> savedRoutesForDisplay = new ArrayList<>();
+            mSavedRoutesForDisplay.add(getString(R.string.select_hint));
             for (String mSavedRoute : mSavedRoutes) {
                 String[] startAndEnd = mSavedRoute.split(",");
-                savedRoutesForDisplay.add(startAndEnd[0] + "  ->  " + startAndEnd[1]);
+                mSavedRoutesForDisplay.add(startAndEnd[0] + "  ->  " + startAndEnd[1]);
             }
-            arrayAdapter = new ArrayAdapter<>(this,
-                    android.R.layout.simple_spinner_dropdown_item, savedRoutesForDisplay);
-            mRoutesList.setAdapter(arrayAdapter);
+            mArrayAdapter = new ArrayAdapter<>(this,
+                    android.R.layout.simple_spinner_dropdown_item, mSavedRoutesForDisplay);
+            mRoutesList.setAdapter(mArrayAdapter);
             mRoutesList.setOnItemSelectedListener(this);
         } else {
             TextView noRoutesMsg = findViewById(R.id.noRoutesMsg);
@@ -89,45 +81,52 @@ public class SavedRoutesActivity extends BaseActivity
 
     @Override
     public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-        String selected_route = mSavedRoutes[position];
-        String[] startAndEnd = selected_route.split(",");
-        new Thread(() ->
-        {
-            Graph graph = Graph.createMRTGraph();
-            try
+        // do nothing if the 'please select' hint option is selected
+        if (position == 0) {
+            replaceRouteFragment(null);
+        }
+        else {
+            // retrieve the selected route and generate shortest path for display via fragment
+            String selected_route = mSavedRoutes[position-1];
+            String[] startAndEnd = selected_route.split(",");
+            new Thread(() ->
             {
-                graph.updateGraphFromWebAPI();
-            }
-            catch (JSONException | IOException e)
-            {
-                e.printStackTrace();
-            }
-            Route result = Dijkstra
-                    .shortestPathAndDistanceFromSourceToDestination
-                            (startAndEnd[0], startAndEnd[1], graph);
-            if (result != null)
-            {
-                runOnUiThread(() -> {
-                    replaceRouteFragment(result);
-                    // the prints below are just to check if data is being passed properly
-                    System.out.println(result.getPath());
-                    System.out.println(result.getTotalTime());
-                    System.out.println(result.getInterchanges().size());
-                    for (Subroute sr : result.getSubroutes())
-                    {
-                        System.out.println(sr.getLine());
-                        System.out.println("Towards " + sr.getDirection());
-                        System.out.println(sr.getNoOfStations());
-                        System.out.print(sr.getNoOfMins() + "\n");
-                    }
-                });
-            }
-            else
-            {
-                runOnUiThread(() -> Toast.makeText(this, "There is no path available!",
-                        Toast.LENGTH_SHORT).show());
-            }
-        }).start();
+                Graph graph = Graph.createMRTGraph();
+                try
+                {
+                    graph.updateGraphFromWebAPI();
+                }
+                catch (JSONException | IOException e)
+                {
+                    e.printStackTrace();
+                }
+                Route result = Dijkstra
+                        .shortestPathAndDistanceFromSourceToDestination
+                                (startAndEnd[0], startAndEnd[1], graph);
+                if (result != null)
+                {
+                    runOnUiThread(() -> {
+                        replaceRouteFragment(result);
+                        // the prints below are just to check if data is being passed properly
+                        System.out.println(result.getPath());
+                        System.out.println(result.getTotalTime());
+                        System.out.println(result.getInterchanges().size());
+                        for (Subroute sr : result.getSubroutes())
+                        {
+                            System.out.println(sr.getLine());
+                            System.out.println("Towards " + sr.getDirection());
+                            System.out.println(sr.getNoOfStations());
+                            System.out.print(sr.getNoOfMins() + "\n");
+                        }
+                    });
+                }
+                else
+                {
+                    runOnUiThread(() -> Toast.makeText(this, "There is no path available!",
+                            Toast.LENGTH_SHORT).show());
+                }
+            }).start();
+        }
 
     }
 
@@ -144,26 +143,27 @@ public class SavedRoutesActivity extends BaseActivity
         FragmentManager fm = getSupportFragmentManager();
         FragmentTransaction trans = fm.beginTransaction();
         trans.replace(R.id.fragment_route_container, fragment);
-        /*if(selected_route!=null) {
-            trans.addToBackStack(null);
-        }*/
         trans.commit();
     }
 
     @Override
-    public void bookmarkClicked() {
+    public void refreshDropdownAfterRouteDeleted() {
+        // retrieve new list of saved routes and update dropdown list
         String content = getSavedRoutes();
         if(content!=null) {
             mSavedRoutes = content.split(";");
-            List<String> savedRoutesForDisplay = new ArrayList<>();
+            mSavedRoutesForDisplay.clear();
+            mSavedRoutesForDisplay.add(getString(R.string.select_hint));
             for (String mSavedRoute : mSavedRoutes) {
                 String[] startAndEnd = mSavedRoute.split(",");
-                savedRoutesForDisplay.add(startAndEnd[0] + "  ->  " + startAndEnd[1]);
+                mSavedRoutesForDisplay.add(startAndEnd[0] + "  ->  " + startAndEnd[1]);
             }
-            arrayAdapter.clear();
-            arrayAdapter.addAll(savedRoutesForDisplay);
-            //arrayAdapter.notifyDataSetChanged();
-        } else {
+            mRoutesList.setSelection(0);
+            mArrayAdapter.notifyDataSetChanged();
+
+        }
+        // if there is no saved route remaining, display message instead
+        else {
             TextView noRoutesMsg = findViewById(R.id.noRoutesMsg);
             noRoutesMsg.setVisibility(View.VISIBLE);
             mRoutesList.setVisibility(View.GONE);
