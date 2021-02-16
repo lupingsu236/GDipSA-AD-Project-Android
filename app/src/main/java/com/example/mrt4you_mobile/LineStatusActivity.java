@@ -24,6 +24,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 public class LineStatusActivity extends BaseActivity {
     private static String AZURENONOPERATIONALSTATIONSURL = "https://mrt4youweb.azurewebsites.net/api/nonoperationalstations";
@@ -66,7 +67,14 @@ public class LineStatusActivity extends BaseActivity {
                 bufferedReader.close();
                 urlConnection.disconnect();
 
-                if (content.toString().length() >2)
+                if(content.toString().length()<=2) {
+                    runOnUiThread(() -> {
+                        ns_status_display.setImageResource(R.drawable.normal);
+                        ew_status_display.setImageResource(R.drawable.normal);
+                        cc_status_display.setImageResource(R.drawable.normal);
+                    });
+                }
+                else if (content.toString().length() >2)
                 {
                     JSONArray jsonArray = new JSONArray(content.toString());
                     for (int i = 0; i < jsonArray.length(); i++)
@@ -78,7 +86,7 @@ public class LineStatusActivity extends BaseActivity {
 
                         if(status!=0) {
                             //check current status of line to see if update is required
-                            switch (line_status.get(stationCode.substring(0, 2).toLowerCase())) {
+                            switch (Objects.requireNonNull(line_status.get(stationCode.substring(0, 2).toLowerCase()))) {
                                 case "normal":
                                     if (status <= 3) {
                                         line_status.put(stationCode.substring(0, 2).toLowerCase(), "breakdown");
@@ -100,7 +108,7 @@ public class LineStatusActivity extends BaseActivity {
 
                     runOnUiThread(() -> {
                         //update status display for each respective line
-                        switch(line_status.get("ns")){
+                        switch(Objects.requireNonNull(line_status.get("ns"))){
                             case "normal":
                                 ns_status_display.setImageResource(R.drawable.normal);
                                 break;
@@ -112,7 +120,7 @@ public class LineStatusActivity extends BaseActivity {
                                 break;
                         }
 
-                        switch(line_status.get("ew")){
+                        switch(Objects.requireNonNull(line_status.get("ew"))){
                             case "normal":
                                 ew_status_display.setImageResource(R.drawable.normal);
                                 break;
@@ -123,7 +131,7 @@ public class LineStatusActivity extends BaseActivity {
                                 ew_status_display.setImageResource(R.drawable.delayed);
                                 break;
                         }
-                        switch(line_status.get("cc")){
+                        switch(Objects.requireNonNull(line_status.get("cc"))){
                             case "normal":
                                 cc_status_display.setImageResource(R.drawable.normal);
                                 break;
