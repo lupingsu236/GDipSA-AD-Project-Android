@@ -65,7 +65,7 @@ public class RouteDisplayAdapter extends ArrayAdapter<Subroute> {
         subroute_direction.setText(String.format("Towards %s", subroute.getDirection()));
 
         TextView subroute_stops = view.findViewById(R.id.subroute_stops);
-        subroute_stops.setText(String.format("> Ride %s Stops(s) (%s min)",
+        subroute_stops.setText(String.format("> Ride %s Stops(s)\n(%s min)",
                 subroute.getNoOfStations(), subroute.getNoOfMins()));
 
 

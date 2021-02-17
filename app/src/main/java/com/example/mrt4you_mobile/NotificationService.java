@@ -18,16 +18,17 @@ import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
 
 import java.util.Map;
+import java.util.Objects;
 import java.util.Random;
 
 public class NotificationService extends FirebaseMessagingService {
 
     @Override
-    public void onMessageReceived(RemoteMessage remoteMessage) {
+    public void onMessageReceived(@NonNull RemoteMessage remoteMessage) {
         super.onMessageReceived(remoteMessage);
 
         if(remoteMessage.getData().isEmpty()){
-            showNotification(remoteMessage.getNotification().getTitle(),remoteMessage.getNotification().getBody());
+            showNotification(Objects.requireNonNull(remoteMessage.getNotification()).getTitle(),remoteMessage.getNotification().getBody());
         }else{
             showNotification(remoteMessage.getData());
         }
@@ -56,7 +57,7 @@ public class NotificationService extends FirebaseMessagingService {
                 .setWhen(System.currentTimeMillis())
                 .setContentTitle(title)
                 .setContentText(body)
-                .setSmallIcon(R.mipmap.ic_launcher)
+                .setSmallIcon(R.drawable.ic_notification)
                 .setContentInfo("Info");
         notificationManager.notify(new Random().nextInt(), notificationBuilder.build());
     }
@@ -81,7 +82,7 @@ public class NotificationService extends FirebaseMessagingService {
                 .setWhen(System.currentTimeMillis())
                 .setContentTitle(title)
                 .setContentText(body)
-                .setSmallIcon(R.mipmap.ic_launcher)
+                .setSmallIcon(R.drawable.ic_notification)
                 .setContentInfo("Info");
         notificationManager.notify(new Random().nextInt(), notificationBuilder.build());
     }

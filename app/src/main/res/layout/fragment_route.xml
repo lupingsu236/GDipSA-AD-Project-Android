@@ -48,12 +48,13 @@
 
         <ImageButton
             android:id="@+id/bookmark"
-            android:layout_width="30dp"
-            android:layout_height="30dp"
+            android:layout_width="28dp"
+            android:layout_height="28dp"
             android:layout_marginEnd="10dp"
-            android:background="#FFFFFF"
+            android:background="@color/transparent"
             android:contentDescription="@string/icon_for_bookmarking"
             android:tint="@drawable/bottomnav_color"
+            android:scaleType="fitCenter"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent"
