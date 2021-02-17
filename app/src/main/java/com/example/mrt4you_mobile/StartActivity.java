@@ -19,7 +19,7 @@ public class StartActivity extends AppCompatActivity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_start);
 
-        FirebaseMessaging.getInstance().subscribeToTopic("notification")
+        FirebaseMessaging.getInstance().subscribeToTopic("mrt4you_notif")
                 .addOnCompleteListener(new OnCompleteListener<Void>() {
                     @Override
                     public void onComplete(@NonNull Task<Void> task) {
