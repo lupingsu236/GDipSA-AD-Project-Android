@@ -157,122 +157,175 @@ public class NewsActivity extends BaseActivity
                                           int currentStatus)
     {
         String output = "";
-        final String OPERATIONALSUFFIX = "is now fully operational.";
-        final String BREAKDOWNBOTHSUFFIX = "is broken down in both directions.";
-        final String DELAYEDBOTHSUFFIX = "is delayed in both directions. Travel time to the next" +
+        final String GENERALPREFIX = "Train services from";
+        final String OPERATIONALSUFFIX = "are now running normally";
+        final String BREAKDOWNBOTHSUFFIX = "have stopped";
+        final String DELAYEDBOTHSUFFIX = "have been delayed. Travel time to the next" +
                 " stations in the direction of";
-        final String BREAKDOWNONEWAYSUFFIX = "is broken down in the direction of";
-        final String DELAYEDONEWAYSUFFIX = "is delayed in the direction of";
+        final String DIRECTIONPHRASE = "in the direction of";
+        final String DELAYEDONEWAYSUFFIX = "have been delayed";
         final String ONEWAYSUFFIX = "Travel time to the next station towards";
 
         if (currentStatus == 0)
-            output = String.format("[%s] %s %s", stationCode, stationName, OPERATIONALSUFFIX);
+            output = String.format("[OPERATIONAL] %s %s %s %s.", GENERALPREFIX, stationCode, stationName, OPERATIONALSUFFIX);
         else
         {
             switch (currentStatus)
             {
                 case 1:
-                    output = String.format("[%s] %s %s", stationCode, stationName,
+                    output = String.format("[BREAKDOWN] %s %s %s %s.", GENERALPREFIX, stationCode, stationName,
                             BREAKDOWNBOTHSUFFIX);
                     break;
                 case 2:
                     if (stationCode.toLowerCase().startsWith(NSPREFIX))
                     {
-                        output = String.format("[%s] %s %s %s. %s %s is %s minute(s).", stationCode,
-                                stationName, BREAKDOWNONEWAYSUFFIX, NSLINEFWDSTATION, ONEWAYSUFFIX,
-                                NSLINEOPPSTATION, timeToNextStationOpp);
+                        if (stationName.equalsIgnoreCase(NSLINEOPPSTATION)) {
+                            output = String.format("[BREAKDOWN] %s %s %s %s %s %s.",
+                                    GENERALPREFIX, stationCode, stationName, DIRECTIONPHRASE,
+                                    NSLINEFWDSTATION, BREAKDOWNBOTHSUFFIX);
+                        }
+                        else {
+                            output = String.format("[BREAKDOWN] %s %s %s %s %s %s. %s %s is %s minute(s).",
+
+                                    GENERALPREFIX, stationCode, stationName, DIRECTIONPHRASE,
+                                    NSLINEFWDSTATION, BREAKDOWNBOTHSUFFIX, ONEWAYSUFFIX,
+                                    NSLINEOPPSTATION, timeToNextStationOpp);
+                        }
                     }
                     else if (stationCode.toLowerCase().startsWith(EWPREFIX))
                     {
-                        output = String.format("[%s] %s %s %s. %s %s is %s minute(s).", stationCode,
-                                stationName, BREAKDOWNONEWAYSUFFIX, EWLINEFWDSTATION, ONEWAYSUFFIX,
-                                EWLINEOPPSTATION, timeToNextStationOpp);
+                        if (stationName.equalsIgnoreCase(EWLINEOPPSTATION)) {
+                            output = String.format("[BREAKDOWN] %s [%s] %s %s %s %s.",
+                                    GENERALPREFIX, stationCode, stationName, DIRECTIONPHRASE,
+                                    EWLINEFWDSTATION, BREAKDOWNBOTHSUFFIX);
+                        } else {
+                            output = String.format("[BREAKDOWN] %s %s %s %s %s %s. %s %s is %s minute(s).",
+                                    GENERALPREFIX, stationCode, stationName, DIRECTIONPHRASE,
+                                    EWLINEFWDSTATION, BREAKDOWNBOTHSUFFIX, ONEWAYSUFFIX,
+                                    EWLINEOPPSTATION, timeToNextStationOpp);
+                        }
+
                     }
                     else if (stationCode.toLowerCase().startsWith(CCPREFIX))
                     {
-                        output = String.format("[%s] %s %s %s. %s %s is %s minute(s).", stationCode,
-                                stationName, BREAKDOWNONEWAYSUFFIX, CCLINEFWDSTATION, ONEWAYSUFFIX,
-                                CCLINEOPPSTATION, timeToNextStationOpp);
+                        if (stationName.equalsIgnoreCase(CCLINEOPPSTATION)) {
+                            output = String.format("[BREAKDOWN] %s %s %s %s %s %s.",
+                                    GENERALPREFIX, stationCode, stationName, DIRECTIONPHRASE,
+                                    CCLINEFWDSTATION, BREAKDOWNBOTHSUFFIX);
+                        }
+                        else {
+                            output = String.format("[BREAKDOWN] %s %s %s %s %s %s. %s %s is %s minute(s).",
+                                    GENERALPREFIX, stationCode, stationName, DIRECTIONPHRASE,
+                                    CCLINEFWDSTATION, BREAKDOWNBOTHSUFFIX, ONEWAYSUFFIX,
+                                    CCLINEOPPSTATION, timeToNextStationOpp);
+                        }
+
                     }
                     break;
                 case 3:
                     if (stationCode.toLowerCase().startsWith(NSPREFIX))
                     {
-                        output = String.format("[%s] %s %s %s. %s %s is %s minute(s).", stationCode,
-                                stationName, BREAKDOWNONEWAYSUFFIX, NSLINEOPPSTATION, ONEWAYSUFFIX,
-                                NSLINEFWDSTATION, timeToNextStation);
+                        if (stationName.equalsIgnoreCase(NSLINEFWDSTATION)) {
+                            output = String.format("[BREAKDOWN] %s %s %s %s %s %s.",
+                                    GENERALPREFIX, stationCode, stationName, DIRECTIONPHRASE,
+                                    NSLINEOPPSTATION, BREAKDOWNBOTHSUFFIX);
+                        }
+                        else {
+                            output = String.format("[BREAKDOWN] %s %s %s %s %s %s. %s %s is %s minute(s).",
+                                    GENERALPREFIX, stationCode, stationName, DIRECTIONPHRASE,
+                                    NSLINEOPPSTATION, BREAKDOWNBOTHSUFFIX, ONEWAYSUFFIX,
+                                    NSLINEFWDSTATION, timeToNextStation);
+                        }
+
                     }
                     else if (stationCode.toLowerCase().startsWith(EWPREFIX))
                     {
-                        output = String.format("[%s] %s %s %s. %s %s is %s minute(s).", stationCode,
-                                stationName, BREAKDOWNONEWAYSUFFIX, EWLINEOPPSTATION, ONEWAYSUFFIX,
-                                EWLINEFWDSTATION, timeToNextStation);
+                        if(stationName.equalsIgnoreCase(EWLINEFWDSTATION)) {
+                            output = String.format("[BREAKDOWN] %s %s %s %s %s %s.",
+                                    GENERALPREFIX, stationCode, stationName, DIRECTIONPHRASE,
+                                    EWLINEOPPSTATION, BREAKDOWNBOTHSUFFIX);
+                        }
+                        else {
+                            output = String.format("[BREAKDOWN] %s %s %s %s %s %s. %s %s is %s minute(s).",
+                                    GENERALPREFIX, stationCode, stationName, DIRECTIONPHRASE,
+                                    EWLINEOPPSTATION, BREAKDOWNBOTHSUFFIX, ONEWAYSUFFIX,
+                                    EWLINEFWDSTATION, timeToNextStation);
+                        }
+
                     }
                     else if (stationCode.toLowerCase().startsWith(CCPREFIX))
                     {
-                        output = String.format("[%s] %s %s %s. %s %s is %s minute(s).", stationCode,
-                                stationName, BREAKDOWNONEWAYSUFFIX, CCLINEOPPSTATION, ONEWAYSUFFIX,
-                                CCLINEFWDSTATION, timeToNextStation);
+                        if(stationName.equalsIgnoreCase(CCLINEFWDSTATION)) {
+                            output = String.format("[BREAKDOWN] %s %s %s %s %s %s.",
+                                    GENERALPREFIX, stationCode, stationName, DIRECTIONPHRASE,
+                                    CCLINEOPPSTATION, BREAKDOWNBOTHSUFFIX);
+                        }
+                        else {
+                            output = String.format("[BREAKDOWN] %s %s %s %s %s %s. %s %s is %s minute(s).",
+                                    GENERALPREFIX, stationCode, stationName, DIRECTIONPHRASE,
+                                    CCLINEOPPSTATION, BREAKDOWNBOTHSUFFIX, ONEWAYSUFFIX,
+                                    CCLINEFWDSTATION, timeToNextStation);
+                        }
                     }
                     break;
                 case 4:
                     if (stationCode.toLowerCase().startsWith(NSPREFIX))
                     {
-                        output = String.format("[%s] %s %s %s and %s are now %s and %s minute(s), respectively.",
-                                stationCode, stationName, DELAYEDBOTHSUFFIX, NSLINEFWDSTATION,
+                        output = String.format("[DELAY] %s %s %s %s %s and %s are now %s and %s minute(s), respectively.",
+                                GENERALPREFIX, stationCode, stationName, DELAYEDBOTHSUFFIX, NSLINEFWDSTATION,
                                 NSLINEOPPSTATION, timeToNextStation, timeToNextStationOpp);
                     }
                     else if (stationCode.toLowerCase().startsWith(EWPREFIX))
                     {
-                        output = String.format("[%s] %s %s %s and %s are now %s and %s minute(s), respectively.",
-                                stationCode, stationName, DELAYEDBOTHSUFFIX, EWLINEFWDSTATION,
+                        output = String.format("[DELAY] %s %s %s %s %s and %s are now %s and %s minute(s), respectively.",
+                                GENERALPREFIX, stationCode, stationName, DELAYEDBOTHSUFFIX, EWLINEFWDSTATION,
                                 EWLINEOPPSTATION, timeToNextStation, timeToNextStationOpp);
                     }
                     else if (stationCode.toLowerCase().startsWith(CCPREFIX))
                     {
-                        output = String.format("[%s] %s %s %s and %s are now %s and %s minute(s), respectively.",
-                                stationCode, stationName, DELAYEDBOTHSUFFIX, CCLINEFWDSTATION,
+                        output = String.format("[DELAY] %s %s %s %s %s and %s are now %s and %s minute(s), respectively.",
+                                GENERALPREFIX, stationCode, stationName, DELAYEDBOTHSUFFIX, CCLINEFWDSTATION,
                                 CCLINEOPPSTATION, timeToNextStation, timeToNextStationOpp);
                     }
                     break;
                 case 5:
                     if (stationCode.toLowerCase().startsWith(NSPREFIX))
                     {
-                        output = String.format("[%s] %s %s %s. %s %s is now %s minute(s).", stationCode,
-                                stationName, DELAYEDONEWAYSUFFIX, NSLINEFWDSTATION, ONEWAYSUFFIX,
-                                NSLINEFWDSTATION, timeToNextStation);
+                        output = String.format("[DELAY] %s %s %s %s %s %s. %s %s is now %s minute(s).",
+                                GENERALPREFIX, stationCode, stationName, DIRECTIONPHRASE, NSLINEFWDSTATION,
+                                DELAYEDONEWAYSUFFIX, ONEWAYSUFFIX, NSLINEFWDSTATION, timeToNextStation);
                     }
                     else if (stationCode.toLowerCase().startsWith(EWPREFIX))
                     {
-                        output = String.format("[%s] %s %s %s. %s %s is now %s minute(s).", stationCode,
-                                stationName, DELAYEDONEWAYSUFFIX, EWLINEFWDSTATION, ONEWAYSUFFIX,
-                                EWLINEFWDSTATION, timeToNextStation);
+                        output = String.format("[DELAY] %s %s %s %s %s %s. %s %s is now %s minute(s).",
+                                GENERALPREFIX, stationCode, stationName, DIRECTIONPHRASE, EWLINEFWDSTATION,
+                                DELAYEDONEWAYSUFFIX, ONEWAYSUFFIX, EWLINEFWDSTATION, timeToNextStation);
                     }
                     else if (stationCode.toLowerCase().startsWith(CCPREFIX))
                     {
-                        output = String.format("[%s] %s %s %s. %s %s is now %s minute(s).", stationCode,
-                                stationName, DELAYEDONEWAYSUFFIX, CCLINEFWDSTATION, ONEWAYSUFFIX,
-                                CCLINEFWDSTATION, timeToNextStation);
+                        output = String.format("[DELAY] %s %s %s %s %s %s. %s %s is now %s minute(s).",
+                                GENERALPREFIX, stationCode, stationName, DIRECTIONPHRASE, CCLINEFWDSTATION,
+                                DELAYEDONEWAYSUFFIX, ONEWAYSUFFIX, CCLINEFWDSTATION, timeToNextStation);
                     }
                     break;
                 case 6:
                     if (stationCode.toLowerCase().startsWith(NSPREFIX))
                     {
-                        output = String.format("[%s] %s %s %s. %s %s is now %s minute(s).", stationCode,
-                                stationName, DELAYEDONEWAYSUFFIX, NSLINEOPPSTATION, ONEWAYSUFFIX,
-                                NSLINEOPPSTATION, timeToNextStationOpp);
+                        output = String.format("[DELAY] %s %s %s %s %s %s. %s %s is now %s minute(s).",
+                                GENERALPREFIX, stationCode, stationName, DIRECTIONPHRASE, NSLINEOPPSTATION,
+                                DELAYEDONEWAYSUFFIX, ONEWAYSUFFIX, NSLINEOPPSTATION, timeToNextStationOpp);
                     }
                     else if (stationCode.toLowerCase().startsWith(EWPREFIX))
                     {
-                        output = String.format("[%s] %s %s %s. %s %s is now %s minute(s).", stationCode,
-                                stationName, DELAYEDONEWAYSUFFIX, EWLINEOPPSTATION, ONEWAYSUFFIX,
-                                EWLINEOPPSTATION, timeToNextStationOpp);
+                        output = String.format("[DELAY] %s %s %s %s %s %s. %s %s is now %s minute(s).",
+                                GENERALPREFIX, stationCode, stationName, DIRECTIONPHRASE, EWLINEOPPSTATION,
+                                DELAYEDONEWAYSUFFIX, ONEWAYSUFFIX, EWLINEOPPSTATION, timeToNextStationOpp);
                     }
                     else if (stationCode.toLowerCase().startsWith(CCPREFIX))
                     {
-                        output = String.format("[%s] %s %s %s. %s %s is now %s minute(s).", stationCode,
-                                stationName, DELAYEDONEWAYSUFFIX, CCLINEOPPSTATION, ONEWAYSUFFIX,
-                                CCLINEOPPSTATION, timeToNextStationOpp);
+                        output = String.format("[DELAY] %s %s %s %s %s %s. %s %s is now %s minute(s).",
+                                GENERALPREFIX, stationCode, stationName, DIRECTIONPHRASE, CCLINEOPPSTATION,
+                                DELAYEDONEWAYSUFFIX, ONEWAYSUFFIX, CCLINEOPPSTATION, timeToNextStationOpp);
                     }
                     break;
             }
